@@ -101,8 +101,8 @@ export const en = {
       {
         title: 'The arena',
         items: [
-          'Arena width and length freely adjustable between 10 and 300 metres.',
-          'Four surface colours.',
+          'Arena width and length freely adjustable between 10 and 300 metres. (Pro)',
+          'Four surface colours. (Pro)',
           'Adjustable grid spacing.',
         ],
       },

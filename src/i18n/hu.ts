@@ -104,8 +104,8 @@ export const hu: UIStrings = {
       {
         title: 'Az aréna',
         items: [
-          'Az aréna szélessége és hosszúsága 10 és 300 méter között szabadon változtatható.',
-          'Négy talajszín.',
+          'Az aréna szélessége és hosszúsága 10 és 300 méter között szabadon változtatható. (Pro)',
+          'Négy talajszín. (Pro)',
           'Állítható rácsköz.',
         ],
       },
