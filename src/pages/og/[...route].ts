@@ -47,6 +47,14 @@ const NAVY = rgb(RASTER_TOKENS['cf-navy']);
 const CREAM = rgb(RASTER_TOKENS['cf-cream']);
 const GOLD = rgb(RASTER_TOKENS['cf-gold-on-dark']);
 
+/**
+ * Redundant under `output: 'static'`, deliberate anyway. canvaskit-wasm can only
+ * initialise in Node at build time, never inside a Cloudflare worker, so if an
+ * adapter is ever added this route must stay prerendered or every OG image turns
+ * into a runtime crash.
+ */
+export const prerender = true;
+
 export const { getStaticPaths, GET } = OGImageRoute({
   param: 'route',
   pages,
