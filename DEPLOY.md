@@ -137,18 +137,37 @@ Strip the `email:` prefix and you have your mailing list.
    with a 301. The canonical tags all point at the apex, so www should redirect
    rather than serve a second copy of the site.
 
-### If your domain is somewhere else
+### courseforge.hu is registered at Rackhost
 
-Either move the nameservers to Cloudflare (Add a site → follow the steps at your
-registrar), which is simplest, or add these records at your current DNS host:
+Move the nameservers to Cloudflare. The alternative — leaving DNS at Rackhost and
+pointing a `CNAME` at `courseforge-web.pages.dev` — only works for `www`, because
+DNS does not allow a CNAME at the apex, and the apex is the canonical host here.
 
-| Type | Name | Value |
-|---|---|---|
-| `CNAME` | `@` (or `yourdomain.com`) | `courseforge-web.pages.dev` |
-| `CNAME` | `www` | `courseforge-web.pages.dev` |
+**Write down the current zone before you touch anything.** In Rackhost, Domainek →
+**DNS profilok**, open the profile the domain uses and copy every record,
+especially `MX` and any `TXT` holding SPF, DKIM or DMARC. `support@courseforge.hu`
+is printed on the privacy policy and the impresszum — if the MX records do not
+survive the move, that mailbox stops receiving, which includes GDPR requests.
 
-Some registrars will not allow a CNAME at the apex. If yours refuses, moving the
-nameservers to Cloudflare is the fix.
+1. **Cloudflare → Add a site → `courseforge.hu` → Free.** Cloudflare scans the
+   existing zone and imports what it finds.
+2. **Check the imported records against your copy, one by one.** The scan is
+   best-effort, not authoritative. Fix anything missing now, while the domain is
+   still answering from Rackhost. Do not add an `A` or `CNAME` for the apex —
+   step 6 does that.
+3. Cloudflare shows **two nameservers**, like `xxx.ns.cloudflare.com`.
+4. **Rackhost → Saját domainek → Részletek → Névszerverek módosítása.** Create a
+   profile with the two Cloudflare nameservers and remove Rackhost's.
+   Rackhost validates that the new nameservers actually answer for the domain and
+   refuses the change until they do — so the domain must already be added in
+   Cloudflare (step 1) before this will go through. An error here usually means
+   step 1 was skipped or is not finished, not that anything is broken.
+5. **Wait.** Cloudflare emails you when the domain goes active. The `.hu` registry
+   plus propagation can take up to 24 hours. The site stays reachable at its
+   `*.pages.dev` URL throughout.
+6. Once active, come back to **Custom domains** in the Pages project and follow
+   the steps above for the apex and `www`.
+7. **SSL/TLS → Overview → Full (strict)**, and turn on **Always Use HTTPS**.
 
 ### After the domain is live
 
