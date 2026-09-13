@@ -1,0 +1,42 @@
+# Cloudflare Pages headers.
+#
+# The course MIME type is application/vnd.courseforge.course+json (ANSWERS.md #3).
+# Not application/json, for two reasons: browsers render application/json inline
+# in a viewer tab instead of downloading it, and an eventual Android intent filter
+# matching application/json would register CourseForge as a handler for every JSON
+# file on the device.
+#
+# This value must stay identical to COURSE_FILE.mime in src/config/site.ts and to
+# whatever the app later declares in UTExportedTypeDeclarations and its Android
+# intent filter. See OPEN_QUESTIONS.md.
+
+/courses/*.courseforge
+  Content-Type: application/vnd.courseforge.course+json; charset=utf-8
+  Content-Disposition: attachment
+  X-Content-Type-Options: nosniff
+  Cache-Control: public, max-age=3600
+
+# app-ads.txt must be text/plain at the domain root, reachable without a
+# redirect chain. AdMob's crawler is strict about both.
+/app-ads.txt
+  Content-Type: text/plain; charset=utf-8
+  Cache-Control: public, max-age=3600
+
+# App association files must be served as JSON with no extension trickery.
+/.well-known/apple-app-site-association
+  Content-Type: application/json
+  Cache-Control: public, max-age=3600
+
+/.well-known/assetlinks.json
+  Content-Type: application/json
+  Cache-Control: public, max-age=3600
+
+# Hashed build assets are immutable.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: DENY
+  Permissions-Policy: geolocation=(), camera=(), microphone=(), interest-cohort=()

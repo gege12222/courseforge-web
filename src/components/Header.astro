@@ -1,0 +1,98 @@
+---
+import { routePath, SITE_NAME, type Locale, type RouteId } from '../config/site.ts';
+import { useTranslations } from '../i18n/index.ts';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+import Logo from './Logo.astro';
+
+interface Props {
+  locale: Locale;
+  routeId: RouteId;
+  entry?: string;
+  availableLocales?: Locale[];
+}
+
+const { locale, routeId, entry, availableLocales } = Astro.props;
+const t = useTranslations(locale);
+
+const links: { id: RouteId; label: string }[] = [
+  { id: 'features', label: t.nav.features },
+  { id: 'pricing', label: t.nav.pricing },
+];
+---
+
+<header class="border-b border-line-soft bg-canvas">
+  <div class="mx-auto flex max-w-cf items-center gap-3 px-gutter py-3 sm:px-5">
+    <a
+      href={routePath('home', locale)}
+      class="flex shrink-0 items-center gap-2 text-navy"
+      aria-label={`${SITE_NAME} — ${t.nav.home}`}
+    >
+      <Logo size={26} class="-mt-[3px]" />
+      <span class="font-display text-lg font-bold tracking-display">{SITE_NAME}</span>
+    </a>
+
+    <nav class="ml-auto hidden items-center gap-1 md:flex" aria-label={t.nav.menu}>
+      {
+        links.map((link) => (
+          <a
+            href={routePath(link.id, locale)}
+            aria-current={link.id === routeId ? 'page' : undefined}
+            class="rounded-md px-3 py-2 text-sm font-medium text-ink-muted transition-colors hover:bg-surface hover:text-navy aria-[current=page]:text-navy"
+          >
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="ml-auto flex items-center gap-2 md:ml-0">
+      <LanguageSwitcher {locale} {routeId} {entry} {availableLocales} />
+      <button
+        type="button"
+        id="cf-nav-toggle"
+        class="inline-flex size-10 items-center justify-center rounded-md border border-line bg-surface text-navy md:hidden"
+        aria-expanded="false"
+        aria-controls="cf-nav-mobile"
+        aria-label={t.nav.openMenu}
+        data-label-open={t.nav.openMenu}
+        data-label-close={t.nav.closeMenu}
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <nav id="cf-nav-mobile" hidden class="border-t border-line-soft bg-surface md:hidden" aria-label={t.nav.menu}>
+    <ul class="mx-auto flex max-w-cf flex-col px-gutter py-2">
+      {
+        links.map((link) => (
+          <li>
+            <a
+              href={routePath(link.id, locale)}
+              aria-current={link.id === routeId ? 'page' : undefined}
+              class="block rounded-md px-2 py-3 font-medium text-ink aria-[current=page]:text-navy"
+            >
+              {link.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</header>
+
+<script>
+  const toggle = document.getElementById('cf-nav-toggle');
+  const menu = document.getElementById('cf-nav-mobile');
+  toggle?.addEventListener('click', () => {
+    const open = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!open));
+    toggle.setAttribute(
+      'aria-label',
+      (open ? toggle.dataset.labelOpen : toggle.dataset.labelClose) ?? '',
+    );
+    if (menu) menu.hidden = open;
+  });
+</script>

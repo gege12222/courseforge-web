@@ -1,0 +1,12 @@
+<!--
+  CourseForge mark — the "patkó-kapu" (horseshoe gate).
+  Geometry taken verbatim from the app's own renderer: _LogoPainter in
+  course_forge/lib/core/branding/course_forge_brand.dart, and identical to
+  direction 1a in course_forge/cflogos/"Course Forge Logo.dc.html".
+  Colours are currentColor-driven so tokens.css stays the single source of truth:
+  the arch inherits color, the rails take --cf-logo-rail.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="CourseForge">
+  <path d="M15 54 V32 A17 17 0 0 1 49 32 V54" stroke="currentColor" stroke-width="7" stroke-linecap="round"/>
+  <path d="M24 41 H40 M24 51 H40" stroke="var(--cf-logo-rail, #C9A227)" stroke-width="6" stroke-linecap="round"/>
+</svg>

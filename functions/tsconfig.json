@@ -1,0 +1,15 @@
+{
+  // Pages Functions run on the Workers runtime, not in the Astro build, so they
+  // are type-checked separately with the Workers globals rather than Astro's.
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "types": ["@cloudflare/workers-types"],
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true
+  },
+  "include": ["**/*.ts"]
+}

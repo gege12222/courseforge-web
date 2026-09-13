@@ -1,0 +1,11 @@
+[
+  {
+    "_comment": "PLACEHOLDER — not functional. The Android applicationId is still com.example.courseforge and the Play signing certificate does not exist until the app is created in Play Console. Replace BUNDLE_ID_PENDING and SHA256_PENDING, and make the Flutter-side changes listed in OPEN_QUESTIONS.md, before this does anything at all.",
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "BUNDLE_ID_PENDING",
+      "sha256_cert_fingerprints": ["SHA256_PENDING"]
+    }
+  }
+]

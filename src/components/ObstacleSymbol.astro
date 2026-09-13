@@ -1,0 +1,36 @@
+---
+/**
+ * One obstacle symbol on its own, for /features. Same geometry and the same
+ * tokens as the symbols inside a course plan — one symbol set, two uses.
+ */
+import { standaloneSymbol } from '../lib/course-plan/symbols.ts';
+import type { ElementType } from '../lib/course-plan/schema.ts';
+
+interface Props {
+  type: ElementType;
+  label: string;
+  class?: string;
+}
+
+const { type, label, class: className } = Astro.props;
+const symbol = standaloneSymbol(type);
+---
+
+<figure class:list={['flex h-full flex-col items-center gap-2', className]}>
+  {/* Fixed tile height: each symbol has its own aspect ratio (open water is
+      3.5 m deep, a cavaletti 0.4 m), so sizing by width alone gives a ragged
+      grid with captions at different heights. Constrain the height, let the
+      width follow. */}
+  <div class="flex h-28 w-full items-center justify-center rounded-lg border border-line bg-canvas p-3">
+    <svg
+      viewBox={symbol.viewBox}
+      width={symbol.width}
+      height={symbol.height}
+      role="img"
+      aria-label={label}
+      class="max-h-full w-auto max-w-full"
+      set:html={symbol.markup}
+    />
+  </div>
+  <figcaption class="text-center text-xs font-medium text-ink-muted">{label}</figcaption>
+</figure>

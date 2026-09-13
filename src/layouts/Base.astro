@@ -1,0 +1,64 @@
+---
+import { type Locale, type RouteId } from '../config/site.ts';
+import { useTranslations } from '../i18n/index.ts';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import SEO from '../components/SEO.astro';
+import { RASTER_TOKENS } from '../lib/course-plan/raster.ts';
+import '../styles/global.css';
+import fontDisplay from '../assets/fonts/space-grotesk-700-latin-ext.woff2?url';
+
+interface Props {
+  locale: Locale;
+  routeId: RouteId;
+  entry?: string;
+  title: string;
+  description: string;
+  availableLocales?: Locale[];
+  schema?: object[];
+  noindex?: boolean;
+  article?: { publishedAt: Date; updatedAt?: Date; author: string; tags: string[] };
+}
+
+const { locale, routeId, entry, availableLocales, ...seo } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<!doctype html>
+<html lang={t.meta.htmlLang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Preload 700, not 500: every heading, the wordmark and the buttons above
+         the fold are bold, so 700 is the face on the critical path. Preloading
+         500 instead left the Hungarian homepage reflowing on swap — its longer
+         headline wraps differently in the fallback — for a CLS of 0.083. -->
+    <link rel="preload" href={fontDisplay} as="font" type="font/woff2" crossorigin />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content={RASTER_TOKENS['cf-navy']} />
+
+    <SEO {locale} {routeId} {entry} {availableLocales} {...seo} />
+  </head>
+  <body class="flex min-h-dvh flex-col">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:absolute focus:left-3 focus:top-3 focus:z-50 focus:rounded-md focus:bg-navy focus:px-4 focus:py-2 focus:text-cream"
+    >
+      {t.nav.skipToContent}
+    </a>
+
+    <Header {locale} {routeId} {entry} {availableLocales} />
+
+    <main id="main" class="flex-1">
+      <slot />
+    </main>
+
+    <Footer {locale} {routeId} {entry} {availableLocales} />
+  </body>
+</html>

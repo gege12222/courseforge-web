@@ -1,0 +1,11 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "include": [".astro/types.d.ts", "**/*"],
+  // functions/ runs on the Workers runtime and has its own tsconfig with the
+  // Workers globals; `npm run check` type-checks it separately.
+  "exclude": ["dist", "node_modules", "functions"],
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "strictNullChecks": true
+  }
+}

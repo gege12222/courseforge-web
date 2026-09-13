@@ -1,0 +1,120 @@
+---
+/**
+ * The single head component every page uses. Nothing else emits meta tags.
+ *
+ * Emits: title, description, canonical, hreflang for every locale the page
+ * really exists in plus x-default, Open Graph, Twitter card, and one JSON-LD
+ * graph. Organization and WebSite are added on every page automatically; the
+ * page passes anything else.
+ */
+import { SITE_NAME, SITE_URL_IS_PLACEHOLDER, type Locale, type RouteId } from '../config/site.ts';
+import {
+  absolute,
+  alternatesFor,
+  jsonLdGraph,
+  ogImagePath,
+  organizationSchema,
+  routeUrl,
+  websiteSchema,
+} from '../lib/seo.ts';
+import { useTranslations } from '../i18n/index.ts';
+
+interface Props {
+  locale: Locale;
+  routeId: RouteId;
+  /** Collection entry slug, for /courses/x and /blog/x. */
+  entry?: string;
+  title: string;
+  description: string;
+  /** Locales this page exists in. Defaults to all of them. */
+  availableLocales?: Locale[];
+  /** Extra JSON-LD nodes: SoftwareApplication, BlogPosting, BreadcrumbList. */
+  schema?: object[];
+  noindex?: boolean;
+  /** Article metadata for Open Graph, on blog posts. */
+  article?: { publishedAt: Date; updatedAt?: Date; author: string; tags: string[] };
+}
+
+const {
+  locale,
+  routeId,
+  entry,
+  title,
+  description,
+  availableLocales,
+  schema = [],
+  noindex = false,
+  article,
+} = Astro.props;
+
+const t = useTranslations(locale);
+const canonical = routeUrl(routeId, locale, entry);
+const alternates = alternatesFor(routeId, entry, availableLocales);
+const xDefault = alternates.find((a) => a.locale === 'en') ?? alternates[0];
+const ogImage = absolute(ogImagePath(locale, routeId, entry));
+const fullTitle = routeId === 'home' ? title : `${title} · ${SITE_NAME}`;
+---
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+
+{/* A page that must not be indexed has no business nominating a canonical or
+    advertising translations — the 404 is served for every unmatched path, so
+    its "canonical" would be a lie about a URL that does not exist. */}
+{
+  !noindex && (
+    <>
+      <link rel="canonical" href={canonical} />
+      {alternates.map((alternate) => (
+        <link rel="alternate" hreflang={alternate.locale} href={alternate.href} />
+      ))}
+      {xDefault && <link rel="alternate" hreflang="x-default" href={xDefault.href} />}
+    </>
+  )
+}
+
+{/* The placeholder domain must never be indexed — see OPEN_QUESTIONS.md #7. */}
+{
+  noindex || SITE_URL_IS_PLACEHOLDER ? (
+    <meta name="robots" content="noindex, nofollow" />
+  ) : (
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+  )
+}
+
+<meta property="og:type" content={article ? 'article' : 'website'} />
+<meta property="og:site_name" content={SITE_NAME} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:locale" content={t.meta.ogLocale} />
+{
+  alternates
+    .filter((a) => a.locale !== locale)
+    .map((a) => <meta property="og:locale:alternate" content={a.locale === 'hu' ? 'hu_HU' : 'en_GB'} />)
+}
+<meta property="og:image" content={ogImage} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={title} />
+
+{
+  article && (
+    <>
+      <meta property="article:published_time" content={article.publishedAt.toISOString()} />
+      {article.updatedAt && (
+        <meta property="article:modified_time" content={article.updatedAt.toISOString()} />
+      )}
+      <meta property="article:author" content={article.author} />
+      {article.tags.map((tag) => <meta property="article:tag" content={tag} />)}
+    </>
+  )
+}
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+<meta name="twitter:image:alt" content={title} />
+
+<script type="application/ld+json" set:html={jsonLdGraph([organizationSchema(), websiteSchema(locale), ...schema])} is:inline />

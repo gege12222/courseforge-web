@@ -1,0 +1,96 @@
+---
+/** Long-form typography for rendered Markdown and MDX. */
+interface Props {
+  class?: string;
+  /** Reference documents get a wider measure than marketing copy. */
+  wide?: boolean;
+}
+const { class: className, wide = false } = Astro.props;
+---
+
+<div class:list={['cf-prose', wide && 'cf-prose-wide', className]}>
+  <slot />
+</div>
+
+<style>
+  .cf-prose {
+    max-width: var(--cf-measure);
+    color: var(--cf-ink);
+  }
+  .cf-prose-wide {
+    max-width: var(--cf-measure-wide);
+  }
+  .cf-prose :global(h2) {
+    font-size: 1.4rem;
+    margin-block: var(--cf-space-6) var(--cf-space-2);
+  }
+  .cf-prose :global(h3) {
+    font-size: 1.15rem;
+    margin-block: var(--cf-space-5) var(--cf-space-2);
+  }
+  .cf-prose :global(p),
+  .cf-prose :global(ul),
+  .cf-prose :global(ol) {
+    margin-block: var(--cf-space-4);
+  }
+  .cf-prose :global(ul),
+  .cf-prose :global(ol) {
+    padding-inline-start: 1.35rem;
+  }
+  .cf-prose :global(ul) {
+    list-style: disc;
+  }
+  .cf-prose :global(ol) {
+    list-style: decimal;
+  }
+  .cf-prose :global(li) {
+    margin-block: var(--cf-space-2);
+  }
+  .cf-prose :global(li)::marker {
+    color: var(--cf-gold);
+  }
+  .cf-prose :global(a) {
+    color: var(--cf-navy);
+    text-decoration: underline;
+    text-decoration-color: var(--cf-gold);
+    text-underline-offset: 3px;
+  }
+  .cf-prose :global(strong) {
+    font-weight: 700;
+    color: var(--cf-navy);
+  }
+  .cf-prose :global(blockquote) {
+    margin-block: var(--cf-space-5);
+    padding: var(--cf-space-4);
+    border-inline-start: 3px solid var(--cf-gold);
+    border-radius: var(--cf-radius-sm);
+    background: var(--cf-surface-warm);
+  }
+  .cf-prose :global(blockquote p) {
+    margin: 0;
+  }
+  .cf-prose :global(code) {
+    font-family: var(--cf-font-mono);
+    font-size: 0.9em;
+    padding: 0.1em 0.35em;
+    border-radius: var(--cf-radius-xs);
+    background: var(--cf-surface-sunken);
+  }
+  .cf-prose :global(hr) {
+    margin-block: var(--cf-space-6);
+    border: 0;
+    border-top: 1px solid var(--cf-border);
+  }
+  .cf-prose :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin-block: var(--cf-space-5);
+    font-size: 0.95rem;
+  }
+  .cf-prose :global(th),
+  .cf-prose :global(td) {
+    text-align: start;
+    padding: 0.5rem 0.6rem;
+    border-bottom: 1px solid var(--cf-border);
+  }
+</style>

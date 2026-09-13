@@ -1,0 +1,216 @@
+---
+/**
+ * The hero illustration: a vertical and an oxer with hoofprints travelling the
+ * line between them. No panel, no grid, no drawn route — the prints alone show
+ * where the horse went.
+ *
+ * The track is deliberately kept inside its own column. It cannot overlap the
+ * headline or the copy at any width or in either language, which a fade across
+ * the text could not guarantee: the paragraph is three lines in English and
+ * four in Hungarian, so any geometry tuned against one would collide with the
+ * other.
+ *
+ * The two obstacles come from the same `symbolMarkup()` the course plans and the
+ * features page use, which follows `_pole` and `_parallelPoles` in
+ * element_symbol_painter.dart — so the hero shows the app's real symbols rather
+ * than an impression of them. The curve is the plan renderer's Catmull-Rom.
+ *
+ * Everything is in metres, like the app: fences 3.6 m wide, the oxer 1.4 m deep.
+ * Each fence's rotation is *derived* from the tangent of the ride where it
+ * stands, so the horse always crosses it square — the same rule the app's route
+ * generator follows, and it cannot fall out of step if the line is edited.
+ */
+import { samplePath, type Point } from '../lib/course-plan/curve.ts';
+import { cssVarColour, symbolMarkup, type Colour } from '../lib/course-plan/symbols.ts';
+
+interface Props {
+  class?: string;
+  /** Accessible description of the scene. */
+  label: string;
+}
+
+const { class: className, label } = Astro.props;
+
+/**
+ * Gold poles instead of the app's red, for the hero only.
+ *
+ * This is brand imagery, not a plan: gold ties it to the logo. Course plans and
+ * the features page keep #e94f37 because those are renderings of real courses
+ * and have to match what the app draws. One substitution, everything else
+ * passes straight through to tokens.css.
+ */
+const heroColour: Colour = (name) => cssVarColour(name === 'cf-plan-pole' ? 'cf-gold' : name);
+
+/* ------------------------------------------------------------------ scene */
+
+// Cropped to the content. With no panel behind it there is no frame to fill, so
+// the box hugs the fences and the track rather than floating them in space.
+const VIEW = { x: -0.7, y: 0.8, w: 20.3, h: 11.2 };
+
+/**
+ * The ride, authored left to right, then mirrored so the horse travels toward
+ * the headline rather than away from it. Reflecting about the middle of the
+ * crop keeps the framing identical; the fence angles re-derive themselves from
+ * the mirrored tangents, so nothing has to be hand-adjusted.
+ */
+const MIRROR_ABOUT = 21.5;
+const VERTICAL_AT = 2;
+const OXER_AT = 5;
+const line: Point[] = [
+  { x: 1.5, y: 15.6 },
+  { x: 2.6, y: 12.6 },
+  { x: 4.2, y: 9.8 }, // the vertical
+  { x: 6.8, y: 6.3 },
+  { x: 10.2, y: 3.9 },
+  { x: 14.8, y: 2.9 }, // the oxer
+  { x: 18.4, y: 3.9 },
+  { x: 20.2, y: 5.6 },
+  { x: 21.1, y: 8.4 },
+  { x: 21.6, y: 12.4 },
+].map((point) => ({ x: MIRROR_ABOUT - point.x, y: point.y }));
+
+// Tangent of the ride at each anchor, from a dense sample.
+const dense = samplePath(line, 240);
+function tangentAt(point: Point): number {
+  let best = dense[0]!;
+  let bestDistance = Infinity;
+  for (const candidate of dense) {
+    const distance = Math.hypot(candidate.x - point.x, candidate.y - point.y);
+    if (distance < bestDistance) {
+      bestDistance = distance;
+      best = candidate;
+    }
+  }
+  return best.angle;
+}
+
+/** A pole is perpendicular to travel: rotation = tangent − 90°. */
+const fences = [
+  { ...line[VERTICAL_AT]!, type: 'vertical' as const, width: 3.6, depth: 0.8 },
+  { ...line[OXER_AT]!, type: 'oxer' as const, width: 3.6, depth: 1.4 },
+].map((fence) => ({ ...fence, rotation: tangentAt(fence) - 90 }));
+
+/** Is this point on top of a fence? Tested in the fence's own rotated frame. */
+function onFence(point: Point): boolean {
+  return fences.some((fence) => {
+    const radians = (-fence.rotation * Math.PI) / 180;
+    const dx = point.x - fence.x;
+    const dy = point.y - fence.y;
+    const alongPole = dx * Math.cos(radians) - dy * Math.sin(radians);
+    const alongTravel = dx * Math.sin(radians) + dy * Math.cos(radians);
+    return Math.abs(alongPole) < fence.width / 2 + 0.5 && Math.abs(alongTravel) < fence.depth / 2 + 0.85;
+  });
+}
+
+// Hoofprints: evenly spaced by distance, alternating side of the line so the
+// track reads as a horse rather than a dotted path. Prints that would land on a
+// fence are dropped — and the gap that leaves is the jump, which is exactly
+// where a horse leaves no footprints. The original index is kept for the
+// animation delay so the travelling wave stays in step across the gap.
+const prints = samplePath(line, 20, 0.16, 0.95)
+  .map((point, index) => {
+    const radians = ((point.angle + 90) * Math.PI) / 180;
+    const offset = index % 2 === 0 ? 0.34 : -0.34;
+    return {
+      x: point.x + Math.cos(radians) * offset,
+      y: point.y + Math.sin(radians) * offset,
+      angle: point.angle,
+      index,
+    };
+  })
+  .filter((print) => !onFence(print));
+
+const n = (value: number) => Number(value.toFixed(2)).toString();
+
+/**
+ * A hoofprint seen from above: wide and round at the toe, narrower at the heel.
+ * Toe forward (local -y). Solid rather than outlined, and with no frog notch —
+ * at 15 px both turn to mush, and what actually reads as footfalls is the
+ * alternating left-right rhythm, not the detail inside each print.
+ */
+const HOOF =
+  'M 0 -0.33 C 0.22 -0.33 0.32 -0.14 0.30 0.05 C 0.28 0.23 0.15 0.32 0 0.32 C -0.15 0.32 -0.28 0.23 -0.30 0.05 C -0.32 -0.14 -0.22 -0.33 0 -0.33 Z';
+---
+
+<figure class:list={['cf-hero-scene', className]}>
+  <svg
+    viewBox={`${VIEW.x} ${VIEW.y} ${VIEW.w} ${VIEW.h}`}
+    width={VIEW.w * 34}
+    height={VIEW.h * 34}
+    role="img"
+    aria-label={label}
+    class="block h-auto w-full"
+  >
+    <g>
+      {
+        prints.map((print) => (
+          <g transform={`translate(${n(print.x)} ${n(print.y)}) rotate(${n(print.angle + 90)})`}>
+            <g class="cf-hoof" style={`--i:${print.index}`}>
+              <path d={HOOF} fill="var(--cf-navy)" />
+            </g>
+          </g>
+        ))
+      }
+    </g>
+
+    {
+      fences.map((fence) => (
+        <g transform={`translate(${n(fence.x)} ${n(fence.y)}) rotate(${n(fence.rotation)})`}>
+          <Fragment set:html={symbolMarkup(fence.type, fence.width, fence.depth, undefined, { colour: heroColour })} />
+        </g>
+      ))
+    }
+  </svg>
+</figure>
+
+<style>
+  .cf-hero-scene {
+    /* Nothing here on purpose.
+       No mask: the track turns after the oxer and rides out through the bottom
+       of the frame, so it ends the way a horse leaves a shot rather than
+       dissolving in mid-air.
+       No `margin: 0` either — Astro scopes this rule with an attribute
+       selector, which outranks a utility class and would silently cancel any
+       margin set from the outside. Tailwind's base already resets figures. */
+  }
+
+  /* transform-box keeps the scale about each print's own centre rather than the
+     SVG origin, and lets it compose with the translate/rotate on the parent. */
+  .cf-hoof {
+    transform-box: fill-box;
+    transform-origin: center;
+    opacity: 0;
+    animation: cf-hoof-step 5s ease-in-out infinite;
+    animation-delay: calc(var(--i) * 0.13s);
+  }
+
+  @keyframes cf-hoof-step {
+    0% {
+      opacity: 0;
+      transform: scale(0.45);
+    }
+    7% {
+      opacity: 0.9;
+      transform: scale(1);
+    }
+    48% {
+      opacity: 0.9;
+      transform: scale(1);
+    }
+    64%,
+    100% {
+      opacity: 0;
+      transform: scale(1);
+    }
+  }
+
+  /* The global reduced-motion rule collapses the duration, which would leave
+     every print on its final frame — invisible. Show the whole track instead:
+     the same information, no movement. */
+  @media (prefers-reduced-motion: reduce) {
+    .cf-hoof {
+      animation: none;
+      opacity: 0.75;
+    }
+  }
+</style>

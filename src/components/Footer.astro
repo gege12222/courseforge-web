@@ -1,0 +1,49 @@
+---
+/**
+ * One line: the copyright and the three legal pages.
+ *
+ * No language switcher — the header already carries one, and the page-pairing
+ * props (`routeId`, `entry`, `availableLocales`) are still accepted so the
+ * layout does not have to special-case this component if it ever comes back.
+ */
+import { routePath, type Locale, type RouteId } from '../config/site.ts';
+import { useTranslations } from '../i18n/index.ts';
+
+interface Props {
+  locale: Locale;
+  routeId: RouteId;
+  entry?: string;
+  availableLocales?: Locale[];
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+const year = 2026;
+
+const legal: { id: RouteId; label: string }[] = [
+  { id: 'privacy', label: t.footer.privacy },
+  { id: 'terms', label: t.footer.terms },
+  { id: 'impressum', label: t.footer.impressum },
+];
+---
+
+<footer class="border-t border-line-soft bg-surface">
+  <div
+    class="mx-auto flex max-w-cf flex-col gap-3 px-gutter py-6 sm:flex-row sm:items-center sm:justify-between sm:px-5"
+  >
+    <p class="text-sm text-ink-muted">© {year} {t.footer.rights}</p>
+
+    <nav class="flex flex-wrap gap-x-5 gap-y-2" aria-label={t.footer.legal}>
+      {
+        legal.map((link) => (
+          <a
+            href={routePath(link.id, locale)}
+            class="text-sm text-ink-muted underline-offset-2 hover:text-navy hover:underline"
+          >
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+</footer>

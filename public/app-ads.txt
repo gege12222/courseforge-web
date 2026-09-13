@@ -1,0 +1,5 @@
+# app-ads.txt — IAB Tech Lab spec v1.0
+# Authorised sellers of CourseForge app inventory.
+# Must stay at the root of the developer domain listed in Google Play and
+# App Store Connect. Removing a line here revokes that seller's authorisation.
+google.com, pub-5067995864382499, DIRECT, f08c47fec0942fa0

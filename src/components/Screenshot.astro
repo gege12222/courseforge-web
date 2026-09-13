@@ -1,0 +1,53 @@
+---
+/**
+ * A phone screenshot in a light frame. AVIF with a WebP fallback, explicit
+ * width and height, and a reserved aspect box so nothing shifts.
+ *
+ * Screenshots exist in Hungarian only for now; `pending` renders a correctly
+ * proportioned placeholder at the same size so the layout is finished and the
+ * English set is a drop-in. See OPEN_QUESTIONS.md.
+ */
+import { Picture } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  src?: ImageMetadata;
+  alt: string;
+  caption?: string;
+  /** Rendered width in rem, used for the sizes hint. */
+  widthRem?: number;
+  loading?: 'eager' | 'lazy';
+  class?: string;
+}
+
+const { src, alt, caption, widthRem = 15, loading = 'lazy', class: className } = Astro.props;
+const sizes = `(max-width: 640px) 70vw, ${widthRem}rem`;
+---
+
+<figure class:list={['flex flex-col gap-2', className]}>
+  <div
+    class="overflow-hidden rounded-2xl border border-line bg-surface shadow-cf-md"
+    style="aspect-ratio: 1170 / 2532"
+  >
+    {
+      src ? (
+        <Picture
+          src={src}
+          alt={alt}
+          widths={[280, 420, 640]}
+          sizes={sizes}
+          formats={['avif']}
+          fallbackFormat="webp"
+          loading={loading}
+          decoding="async"
+          class="block h-auto w-full"
+        />
+      ) : (
+        <div class="flex h-full w-full items-center justify-center bg-sunken p-4 text-center text-xs text-ink-faint">
+          {alt}
+        </div>
+      )
+    }
+  </div>
+  {caption && <figcaption class="text-xs text-ink-muted">{caption}</figcaption>}
+</figure>

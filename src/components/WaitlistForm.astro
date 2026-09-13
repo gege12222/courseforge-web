@@ -1,0 +1,140 @@
+---
+/**
+ * The one thing on this site that talks to a server: POST /api/waitlist, which
+ * writes an email address and a timestamp to Cloudflare KV. Vanilla JS, no
+ * framework. Works as a plain form submission if JS is off, because the function
+ * answers both fetch and normal form posts.
+ */
+import { type Locale } from '../config/site.ts';
+import { useTranslations } from '../i18n/index.ts';
+
+interface Props {
+  locale: Locale;
+  class?: string;
+}
+
+const { locale, class: className } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<section
+  id="waitlist"
+  class:list={['rounded-xl border border-line bg-surface p-card shadow-cf sm:p-6', className]}
+  aria-labelledby="waitlist-title"
+>
+  <h2 id="waitlist-title" class="font-display text-xl">{t.waitlist.title}</h2>
+  <p class="mt-1.5 text-ink-muted">{t.waitlist.lead}</p>
+
+  <form id="cf-waitlist" method="post" action="/api/waitlist" class="mt-4 flex flex-col gap-3" novalidate>
+    <input type="hidden" name="locale" value={locale} />
+
+    <div>
+      <label for="cf-email" class="block text-sm font-medium text-ink">{t.waitlist.emailLabel}</label>
+      <input
+        type="email"
+        id="cf-email"
+        name="email"
+        required
+        autocomplete="email"
+        inputmode="email"
+        placeholder={t.waitlist.emailPlaceholder}
+        aria-describedby="cf-waitlist-stored"
+        class="mt-1 w-full rounded-md border border-line bg-canvas px-3 py-2.5 text-ink outline-none focus-visible:border-navy"
+      />
+    </div>
+
+    {/* Honeypot. Real people never see it, so they never fill it in. */}
+    <div class="absolute h-0 w-0 overflow-hidden" aria-hidden="true">
+      <label for="cf-company">Company</label>
+      <input type="text" id="cf-company" name="company" tabindex="-1" autocomplete="off" />
+    </div>
+
+    <label class="flex items-start gap-2.5 text-sm text-ink-muted">
+      <input
+        type="checkbox"
+        name="consent"
+        value="yes"
+        required
+        class="mt-1 size-4 shrink-0 accent-[var(--cf-navy)]"
+      />
+      <span>{t.waitlist.consentLabel}</span>
+    </label>
+
+    <button
+      type="submit"
+      class="inline-flex min-h-[48px] items-center justify-center rounded-md bg-navy px-5 font-display font-bold text-cream transition-opacity hover:opacity-90 disabled:opacity-60"
+    >
+      {t.waitlist.submit}
+    </button>
+
+    <p id="cf-waitlist-stored" class="text-xs text-ink-faint">{t.waitlist.stored}</p>
+    <p id="cf-waitlist-status" role="status" aria-live="polite" class="text-sm font-medium"></p>
+  </form>
+</section>
+
+<script
+  is:inline
+  define:vars={{
+    strings: {
+      submit: t.waitlist.submit,
+      submitting: t.waitlist.submitting,
+      success: t.waitlist.success,
+      errorGeneric: t.waitlist.errorGeneric,
+      errorEmail: t.waitlist.errorEmail,
+      errorConsent: t.waitlist.errorConsent,
+    },
+  }}
+>
+  (() => {
+    const form = document.getElementById('cf-waitlist');
+    if (!(form instanceof HTMLFormElement)) return;
+    const status = document.getElementById('cf-waitlist-status');
+    const button = form.querySelector('button[type="submit"]');
+    const email = form.querySelector('input[name="email"]');
+    const consent = form.querySelector('input[name="consent"]');
+
+    const say = (message, ok) => {
+      if (!status) return;
+      status.textContent = message;
+      status.style.color = ok ? 'var(--cf-success)' : 'var(--cf-danger)';
+    };
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!email.value || !email.checkValidity()) {
+        say(strings.errorEmail, false);
+        email.focus();
+        return;
+      }
+      if (!consent.checked) {
+        say(strings.errorConsent, false);
+        consent.focus();
+        return;
+      }
+
+      button.disabled = true;
+      button.textContent = strings.submitting;
+      say('', true);
+
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json', accept: 'application/json' },
+          body: JSON.stringify({
+            email: email.value.trim(),
+            consent: 'yes',
+            company: form.querySelector('input[name="company"]').value,
+          }),
+        });
+        if (!response.ok) throw new Error(String(response.status));
+        form.reset();
+        say(strings.success, true);
+      } catch {
+        say(strings.errorGeneric, false);
+      } finally {
+        button.disabled = false;
+        button.textContent = strings.submit;
+      }
+    });
+  })();
+</script>

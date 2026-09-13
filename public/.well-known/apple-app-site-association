@@ -1,0 +1,23 @@
+{
+  "_comment": "PLACEHOLDER — not functional. The Flutter app's bundle ID is still com.example.courseforge and there is no Apple Developer Team ID yet. Replace TEAMID_PENDING and BUNDLE_ID_PENDING, and make the Flutter-side changes listed in OPEN_QUESTIONS.md, before this does anything at all.",
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["TEAMID_PENDING.BUNDLE_ID_PENDING"],
+        "components": [
+          {
+            "/": "/courses/*",
+            "comment": "Course files and course pages"
+          },
+          {
+            "/": "/hu/palyak/*",
+            "comment": "Hungarian course pages"
+          }
+        ]
+      }
+    ]
+  },
+  "appclips": {
+    "apps": []
+  }
+}

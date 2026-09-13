@@ -1,0 +1,40 @@
+{
+  "name": "courseforge-web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Marketing website for CourseForge, the show jumping course designer.",
+  "engines": {
+    "node": ">=20 <25"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "npm run check && astro build",
+    "build:only": "astro build",
+    "preview": "astro preview",
+    "check": "astro check && tsc -p functions --noEmit",
+    "fonts": "python scripts/build-fonts.py",
+    "favicons": "node scripts/build-favicons.mjs",
+    "verify": "npm run build && node scripts/verify-build.mjs",
+    "fonts:check": "python scripts/check-fonts.py",
+    "plans": "node scripts/preview-course-plans.mjs"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@astrojs/mdx": "^4.3.7",
+    "@astrojs/rss": "^4.0.19",
+    "@astrojs/sitemap": "^3.7.1",
+    "astro": "^5.16.2",
+    "astro-og-canvas": "^0.7.0",
+    "canvaskit-wasm": "^0.39.1",
+    "typescript": "^5.9.3",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260804.1",
+    "@fontsource/space-grotesk": "^5.3.0",
+    "@tailwindcss/vite": "^4.1.18",
+    "sharp": "^0.34.4",
+    "tailwindcss": "^4.1.18"
+  }
+}

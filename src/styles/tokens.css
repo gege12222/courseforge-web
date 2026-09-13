@@ -1,0 +1,221 @@
+/* ============================================================================
+   CourseForge design tokens
+   ----------------------------------------------------------------------------
+   THE ONLY FILE IN THIS REPO THAT MAY CONTAIN A COLOUR LITERAL.
+   Everything else uses var(--cf-*) or a Tailwind utility wired to one below.
+   Three documented exceptions, all files that cannot read a stylesheet:
+     - src/lib/course-plan/raster.ts — literal mirror of the plan tokens, for
+       rasterising OG images with sharp, which has no CSS. Keep it in step.
+     - scripts/build-favicons.mjs   — a favicon is a standalone file.
+     - src/assets/brand/*.svg       — fallback after var(), for standalone use.
+
+   Every value is traced to the Flutter app. `[app]` = lifted verbatim,
+   `[web]`  = added for the website because the app has no equivalent.
+   See AUDIT.md §1a for the full extraction.
+   ========================================================================= */
+
+:root {
+  color-scheme: light; /* the app is light-only; see ANSWERS.md #11 */
+
+  /* --- Brand ------------------------------------------------------------
+     [app] lib/core/branding/course_forge_brand.dart */
+  --cf-navy: #1b2a4a;
+  --cf-gold: #c9a227;
+  --cf-cream: #f2efe8;
+
+  /* Two golds on purpose. #c9a227 on #1b2a4a does not clear WCAG AA for text,
+     so navy surfaces get the lighter gold from the logo design doc
+     (cflogos/"Course Forge Logo.dc.html", on-dark variant of direction 1a).
+     Do not "simplify" these into one token, and never put --cf-gold on navy. */
+  --cf-gold-on-light: var(--cf-gold);
+  --cf-gold-on-dark: #e3bc4b; /* [app] logo doc; approved in ANSWERS.md #10 */
+
+  /* Logo rails. courseforge-mark.svg reads this; the arch takes currentColor. */
+  --cf-logo-rail: var(--cf-gold);
+
+  /* --- Surfaces ---------------------------------------------------------
+     [app] AppTheme._canvas and colorScheme.surface */
+  --cf-canvas: #f5f7f4; /* page background */
+  --cf-surface: #ffffff; /* cards */
+  --cf-surface-sunken: #e9eeea; /* [app] arena_painter.dart:29 arena fill */
+  --cf-surface-muted: #f2f7f5; /* [app] element_symbol_painter.dart:145 */
+  --cf-surface-warm: #f3f0e8; /* [app] element_symbol_painter.dart:257 */
+  --cf-border: #dce3de; /* [app] inputDecorationTheme enabled border */
+  --cf-border-soft: #e7eeea; /* [app] saved_courses_screen.dart:466 */
+
+  /* --- Ink -------------------------------------------------------------- */
+  --cf-ink: #26332f; /* [app] the de-facto heading colour, 7 uses */
+  --cf-ink-muted: #56635f; /* [app] arena_painter.dart:262 */
+  /* [web] The app's faintest grey is #7d918a, but in the app it outlines
+     symbols — it is never text. As 12 px text it measures 3.1:1 on the canvas,
+     failing WCAG AA. Darkened until it passes on all three of our backgrounds:
+     5.0:1 on canvas, 5.4:1 on white, 4.8:1 on the warm surface. The original
+     app value is kept below as a plan token, where it belongs. */
+  --cf-ink-faint: #5c6e68;
+  --cf-ink-on-navy: var(--cf-cream);
+
+  /* --- Glass ------------------------------------------------------------
+     The app's visual signature: translucent white over the canvas.
+     [app] saved_courses_screen.dart, settings_screen.dart, arena_painter.dart */
+  --cf-glass: rgb(255 255 255 / 0.81); /* [app] 0xCFFFFFFF */
+  --cf-glass-strong: rgb(255 255 255 / 0.85); /* [app] 0xD9FFFFFF */
+  --cf-glass-border: rgb(255 255 255 / 0.94); /* [app] 0xEFFFFFFF */
+  --cf-glass-veil: rgb(255 255 255 / 0.6); /* [app] 0x99FFFFFF */
+  /* [web] A raised surface on navy — badges and chips inside dark panels. */
+  --cf-veil-on-navy: rgb(255 255 255 / 0.14);
+
+  /* --- Shadows ----------------------------------------------------------
+     Always the deep green-black #0c2a25, never pure black. [app] */
+  --cf-shadow-color: 12 42 37; /* #0c2a25 as an rgb triplet */
+  --cf-shadow-sm: 0 1px 2px rgb(var(--cf-shadow-color) / 0.08);
+  --cf-shadow: 0 1px 3px rgb(var(--cf-shadow-color) / 0.12); /* [app] 0x1F0C2A25 */
+  --cf-shadow-md: 0 4px 14px rgb(var(--cf-shadow-color) / 0.13);
+  --cf-shadow-lg: 0 12px 32px rgb(var(--cf-shadow-color) / 0.15);
+
+  /* --- Arena surfaces ---------------------------------------------------
+     The four choices on the app's new-course screen, in order.
+     [app] new_course_screen.dart:27 */
+  --cf-arena-sand: #d8c49b; /* default */
+  --cf-arena-grass: #8ead73;
+  --cf-arena-clay: #b7a988;
+  --cf-arena-slate: #78909c;
+  --cf-arena-sand-alt: #e3c995; /* [app] decoder fallback, course_file_service.dart:114 */
+
+  /* --- Course renderer palette -----------------------------------------
+     Used by the build-time .courseforge -> SVG renderer so a preview cannot
+     drift from the app. [app] arena_painter.dart, element_symbol_painter.dart */
+  --cf-plan-pole: #e94f37; /* pole stripes */
+  --cf-plan-pole-dark: #1f2926; /* pole outline */
+  --cf-plan-route: #ffc857; /* suggested route line and arrows */
+  --cf-plan-route-ink: #37474f; /* [web] dashed route on light plans */
+  --cf-plan-measure: #ea7c2b; /* measurement lines */
+  --cf-plan-measure-label: rgb(92 53 27 / 0.87); /* [app] 0xDD5C351B */
+  --cf-plan-marker: #e6c229; /* start / finish markers */
+  --cf-plan-grid: rgb(23 62 55 / 0.13); /* [app] #173E37 @ 13% */
+  --cf-plan-water: #2d9cdb;
+  --cf-plan-water-light: #6ec5e9;
+  --cf-plan-water-rim: #166b8f;
+  --cf-plan-wall: #263238;
+  --cf-plan-stand: #7a5427;
+  --cf-plan-liverpool-rim: #ed6a5a;
+  --cf-plan-outline: #7d918a; /* [app] element_symbol_painter.dart:125 */
+  --cf-plan-paper: #ffffff; /* pole bodies and number discs */
+
+  /* --- Feedback --------------------------------------------------------- */
+  --cf-danger: #e32636; /* [app] arena_painter.dart:291 */
+  --cf-warning: var(--cf-plan-measure);
+  --cf-success: #477a4c; /* [app] element_symbol_painter.dart:302 */
+
+  /* --- Radii -----------------------------------------------------------
+     [app] BorderRadius.circular() histogram; 22 is the dominant card radius. */
+  --cf-radius-xs: 4px;
+  --cf-radius-sm: 10px;
+  --cf-radius-md: 14px; /* [app] inputs and filled buttons */
+  --cf-radius-lg: 18px; /* [app] cardTheme */
+  --cf-radius-xl: 22px; /* [app] glass cards — the signature radius */
+  --cf-radius-2xl: 26px; /* [app] logo doc icon tiles */
+  --cf-radius-pill: 999px;
+
+  /* --- Type ------------------------------------------------------------
+     Space Grotesk for headings, wordmark and UI labels; system stack for body.
+     [app] the app bundles no font and renders in the platform default, which is
+     what the body stack reproduces. Space Grotesk is from the logo design doc.
+     ANSWERS.md #1. */
+  --cf-font-display: 'Space Grotesk', 'Segoe UI', system-ui, sans-serif;
+  --cf-font-body: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --cf-font-mono: ui-monospace, 'Cascadia Mono', 'Consolas', monospace;
+
+  --cf-weight-display: 500; /* the only two weights we ship */
+  --cf-weight-display-bold: 700;
+
+  /* [app] the splash wordmark uses -0.4px at 24px; the logo doc uses -0.02em */
+  --cf-tracking-display: -0.02em;
+
+  /* --- Spacing ---------------------------------------------------------
+     [web] The app has no spacing scale — every EdgeInsets is inline. These are
+     a web scale seeded from the values the app actually repeats (14/18/22/24/44)
+     so the site feels like the same product. */
+  --cf-space-1: 0.25rem;
+  --cf-space-2: 0.5rem;
+  --cf-space-3: 0.875rem; /* [app] 14 — page gutter */
+  --cf-space-4: 1.125rem; /* [app] 18 — card padding */
+  --cf-space-5: 1.5rem; /* [app] 24 */
+  --cf-space-6: 2rem;
+  --cf-space-7: 2.75rem; /* [app] 44 — hero gap */
+  --cf-space-8: 4rem;
+  --cf-space-9: 6rem;
+
+  /* [app] home_screen.dart constrains content to 620 logical px */
+  --cf-measure: 38rem;
+  /* [web] Long reference documents — the legal pages — read better a little
+     wider than marketing copy: still inside a comfortable line length, but not
+     a narrow ribbon down one third of a desktop screen. */
+  --cf-measure-wide: 52rem;
+  --cf-container: 72rem;
+}
+
+/* ============================================================================
+   Tailwind wiring — utilities resolve to the variables above, never to a hex.
+   ========================================================================= */
+@theme inline {
+  --color-navy: var(--cf-navy);
+  --color-gold: var(--cf-gold);
+  --color-gold-on-dark: var(--cf-gold-on-dark);
+  --color-cream: var(--cf-cream);
+
+  --color-canvas: var(--cf-canvas);
+  --color-surface: var(--cf-surface);
+  --color-sunken: var(--cf-surface-sunken);
+  --color-muted-surface: var(--cf-surface-muted);
+  --color-warm-surface: var(--cf-surface-warm);
+  --color-line: var(--cf-border);
+  --color-line-soft: var(--cf-border-soft);
+
+  --color-ink: var(--cf-ink);
+  --color-ink-muted: var(--cf-ink-muted);
+  --color-ink-faint: var(--cf-ink-faint);
+
+  --color-glass: var(--cf-glass);
+  --color-glass-strong: var(--cf-glass-strong);
+  --color-glass-border: var(--cf-glass-border);
+  --color-veil-on-navy: var(--cf-veil-on-navy);
+
+  --color-arena-sand: var(--cf-arena-sand);
+  --color-arena-grass: var(--cf-arena-grass);
+  --color-arena-clay: var(--cf-arena-clay);
+  --color-arena-slate: var(--cf-arena-slate);
+
+  --color-pole: var(--cf-plan-pole);
+  --color-route: var(--cf-plan-route);
+  --color-measure: var(--cf-plan-measure);
+
+  --color-danger: var(--cf-danger);
+  --color-success: var(--cf-success);
+
+  --font-display: var(--cf-font-display);
+  --font-body: var(--cf-font-body);
+  --font-mono: var(--cf-font-mono);
+
+  --tracking-display: var(--cf-tracking-display);
+
+  --radius-xs: var(--cf-radius-xs);
+  --radius-sm: var(--cf-radius-sm);
+  --radius-md: var(--cf-radius-md);
+  --radius-lg: var(--cf-radius-lg);
+  --radius-xl: var(--cf-radius-xl);
+  --radius-2xl: var(--cf-radius-2xl);
+  --radius-pill: var(--cf-radius-pill);
+
+  --shadow-cf-sm: var(--cf-shadow-sm);
+  --shadow-cf: var(--cf-shadow);
+  --shadow-cf-md: var(--cf-shadow-md);
+  --shadow-cf-lg: var(--cf-shadow-lg);
+
+  --spacing-gutter: var(--cf-space-3);
+  --spacing-card: var(--cf-space-4);
+  --spacing-section: var(--cf-space-9);
+
+  --container-measure: var(--cf-measure);
+  --container-measure-wide: var(--cf-measure-wide);
+  --container-cf: var(--cf-container);
+}

@@ -1,0 +1,39 @@
+---
+/**
+ * The CourseForge mark. Geometry from _LogoPainter in the app; the arch takes
+ * currentColor so it works on light and dark, and the rails read --cf-logo-rail.
+ */
+interface Props {
+  /** Height of the mark itself, in px. */
+  size?: number;
+  class?: string;
+  /** On navy, the rails switch to the lighter on-dark gold (see tokens.css). */
+  onDark?: boolean;
+  title?: string;
+}
+const { size = 40, class: className, onDark = false, title } = Astro.props;
+
+/**
+ * The drawn mark occupies x 11.5–52.5 and y 11.5–57.5 of the app's 64×64 box,
+ * so it sits low and left of that box's centre. Cropping the viewBox to the
+ * glyph makes `size` mean the mark's height and lets flex centring actually
+ * centre it — otherwise the padding inside the box pushes the mark visibly
+ * lower than the wordmark next to it.
+ */
+const BOX = { x: 11.5, y: 11.5, w: 41, h: 46 };
+---
+
+<svg
+  width={Math.round((size * BOX.w) / BOX.h)}
+  height={size}
+  viewBox={`${BOX.x} ${BOX.y} ${BOX.w} ${BOX.h}`}
+  fill="none"
+  class={className}
+  style={onDark ? '--cf-logo-rail: var(--cf-gold-on-dark)' : undefined}
+  role={title ? 'img' : 'presentation'}
+  aria-hidden={title ? undefined : 'true'}
+>
+  {title && <title>{title}</title>}
+  <path d="M15 54 V32 A17 17 0 0 1 49 32 V54" stroke="currentColor" stroke-width="7" stroke-linecap="round" />
+  <path d="M24 41 H40 M24 51 H40" stroke="var(--cf-logo-rail)" stroke-width="6" stroke-linecap="round" />
+</svg>

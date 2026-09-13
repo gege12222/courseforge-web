@@ -1,0 +1,32 @@
+---
+/**
+ * A rendered course plan. The SVG is built at build time from the downloadable
+ * file, so it cannot disagree with what the reader gets.
+ *
+ * width/height come from the renderer, so the box is reserved before paint and
+ * there is no layout shift. `role="img"` plus the label is already in the SVG.
+ */
+import type { CoursePlan } from '../lib/course-plan/render.ts';
+
+interface Props {
+  plan: CoursePlan;
+  class?: string;
+}
+
+const { plan, class: className } = Astro.props;
+---
+
+<div
+  class:list={['overflow-hidden rounded-xl border border-line bg-canvas', className]}
+  style={`aspect-ratio: ${plan.width} / ${plan.height}`}
+>
+  <Fragment set:html={plan.svg} />
+</div>
+
+<style>
+  div :global(svg) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+</style>

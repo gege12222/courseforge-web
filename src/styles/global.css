@@ -1,0 +1,74 @@
+@import 'tailwindcss';
+@import './tokens.css';
+
+/* Self-hosted Space Grotesk. One file per weight covering Latin +
+   Latin Extended-A, so Hungarian ő/ű can never fall to a second request or a
+   fallback face. Built by scripts/build-fonts.py, verified by
+   scripts/check-fonts.py (see docs/font-check-hungarian.png). */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('../assets/fonts/space-grotesk-500-latin-ext.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../assets/fonts/space-grotesk-700-latin-ext.woff2') format('woff2');
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--cf-canvas);
+    color: var(--cf-ink);
+    font-family: var(--cf-font-body);
+    line-height: 1.6;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--cf-font-display);
+    font-weight: var(--cf-weight-display-bold);
+    letter-spacing: var(--cf-tracking-display);
+    line-height: 1.15;
+    color: var(--cf-navy);
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--cf-navy);
+    outline-offset: 2px;
+  }
+
+  /* Images always declare width/height; this keeps them fluid without CLS. */
+  img,
+  svg {
+    max-width: 100%;
+    height: auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}

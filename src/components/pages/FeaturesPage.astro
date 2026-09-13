@@ -1,0 +1,74 @@
+---
+import { type Locale } from '../../config/site.ts';
+import { useTranslations } from '../../i18n/index.ts';
+import Base from '../../layouts/Base.astro';
+import Screenshot from '../Screenshot.astro';
+import library from '../../assets/screenshots/hu/06-object-library.png';
+import strides from '../../assets/screenshots/hu/04-route-curve-and-strides.png';
+import materials from '../../assets/screenshots/hu/05-arena-and-materials.png';
+import newCourse from '../../assets/screenshots/hu/02-new-course.png';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+
+const shots = [newCourse, library, strides, materials];
+---
+
+<Base {locale} routeId="features" title={t.features.title} description={t.features.description}>
+  <section class="border-b border-line-soft bg-canvas">
+    <div class="mx-auto max-w-cf px-gutter py-12 sm:px-5">
+      <h1 class="text-3xl sm:text-4xl">{t.features.title}</h1>
+    </div>
+  </section>
+
+  {/* --------------------------------------------------------------- groups */}
+  <section class="bg-surface">
+    <div class="mx-auto max-w-cf px-gutter py-12 sm:px-5">
+      <div class="grid gap-8 md:grid-cols-2">
+        {
+          t.features.groups.map((group) => (
+            <section>
+              <h2 class="font-display text-lg text-navy">{group.title}</h2>
+              <ul class="mt-2 space-y-2">
+                {group.items.map((item) => (
+                  <li class="flex gap-2.5 text-sm text-ink">
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      class="mt-1 shrink-0"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M4 10.5 8 14.5 16 5.5"
+                        stroke="var(--cf-gold)"
+                        stroke-width="2.2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  {/* ---------------------------------------------------------- screenshots */}
+  <section class="mx-auto max-w-cf px-gutter py-12 sm:px-5">
+    <h2 class="text-2xl">{t.home.screenshotsTitle}</h2>
+    <p class="mt-1.5 text-ink-muted">{t.home.screenshotsLead}</p>
+    <div class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+      {shots.map((shot, index) => <Screenshot src={shot} alt={t.features.groups[index]?.title ?? t.features.title} widthRem={11} />)}
+    </div>
+  </section>
+</Base>

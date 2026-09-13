@@ -1,0 +1,127 @@
+---
+import { PRICING, type Locale } from '../../config/site.ts';
+import { useTranslations } from '../../i18n/index.ts';
+import Base from '../../layouts/Base.astro';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+
+/**
+ * Two prices are shown side by side rather than one converted figure, because
+ * the App Store and Google Play do the converting themselves and a single
+ * "≈ Ft" would be a number nobody is actually charged. `priceNote` says so.
+ */
+const proPrice = locale === 'hu' ? PRICING.lifetimePro.huf : PRICING.lifetimePro.usd;
+const proPriceAlt = locale === 'hu' ? PRICING.lifetimePro.usd : PRICING.lifetimePro.huf;
+
+const tiers = [
+  {
+    name: t.pricing.freeName,
+    price: locale === 'hu' ? `${t.pricing.freePrice} Ft` : `$${t.pricing.freePrice}`,
+    priceAlt: null as string | null,
+    badge: null as string | null,
+    tagline: t.pricing.freeTagline,
+    features: t.pricing.freeFeatures,
+    highlight: false,
+  },
+  {
+    name: t.pricing.proName,
+    price: proPrice,
+    priceAlt: proPriceAlt,
+    badge: t.pricing.proBadge,
+    tagline: t.pricing.proTagline,
+    features: t.pricing.proFeatures,
+    highlight: true,
+  },
+];
+---
+
+<Base {locale} routeId="pricing" title={t.pricing.title} description={t.pricing.description}>
+  <section class="border-b border-line-soft bg-canvas">
+    <div class="mx-auto max-w-cf px-gutter py-12 sm:px-5">
+      <h1 class="text-3xl sm:text-4xl">{t.pricing.heading}</h1>
+    </div>
+  </section>
+
+  <section class="border-b border-line-soft bg-surface">
+    <div class="mx-auto max-w-cf px-gutter py-12 sm:px-5">
+      <ul class="grid gap-5 md:grid-cols-2">
+        {
+          tiers.map((tier) => (
+            <li
+              class:list={[
+                'flex flex-col rounded-xl p-6 sm:p-7',
+                tier.highlight
+                  ? 'bg-navy text-cream shadow-cf-lg'
+                  : 'border border-line bg-canvas shadow-cf',
+              ]}
+            >
+              <div class="flex items-baseline justify-between gap-3">
+                <h2
+                  class:list={[
+                    'font-display text-xl font-bold',
+                    tier.highlight ? 'text-cream' : 'text-navy',
+                  ]}
+                >
+                  {tier.name}
+                </h2>
+                {tier.badge && (
+                  <span
+                    class="rounded-pill bg-veil-on-navy px-3 py-1 text-xs font-medium"
+                    style="color: var(--cf-gold-on-dark)"
+                  >
+                    {tier.badge}
+                  </span>
+                )}
+              </div>
+
+              <p class="mt-4 flex items-baseline gap-2">
+                <span
+                  class:list={[
+                    'font-display text-4xl font-bold',
+                    tier.highlight ? 'text-cream' : 'text-navy',
+                  ]}
+                >
+                  {tier.price}
+                </span>
+                {tier.priceAlt && (
+                  <span class:list={['text-sm', tier.highlight ? 'text-cream/70' : 'text-ink-faint']}>
+                    / {tier.priceAlt}
+                  </span>
+                )}
+              </p>
+
+              <p class:list={['mt-2 text-sm', tier.highlight ? 'text-cream/85' : 'text-ink-muted']}>
+                {tier.tagline}
+              </p>
+
+              <ul class="mt-6 flex flex-1 flex-col gap-2.5">
+                {tier.features.map((feature) => (
+                  <li class:list={['flex gap-2.5 text-sm', tier.highlight ? 'text-cream/90' : 'text-ink']}>
+                    <svg width="16" height="16" viewBox="0 0 20 20" fill="none" class="mt-1 shrink-0" aria-hidden="true">
+                      <path
+                        d="M4 10.5 8 14.5 16 5.5"
+                        stroke={tier.highlight ? 'var(--cf-gold-on-dark)' : 'var(--cf-gold)'}
+                        stroke-width="2.2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ))
+        }
+      </ul>
+
+      <p class="mt-6 max-w-measure-wide text-sm text-ink-muted">{t.pricing.priceNote}</p>
+    </div>
+  </section>
+
+</Base>

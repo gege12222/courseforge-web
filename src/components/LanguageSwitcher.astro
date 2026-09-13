@@ -1,0 +1,66 @@
+---
+/**
+ * Links to the counterpart of the page you are on — never the homepage.
+ *
+ * When a page genuinely has no counterpart (a blog post written in one language
+ * only) it falls back to the nearest equivalent section index in the other
+ * language, which is still closer than the homepage.
+ */
+import { LOCALES, routePath, type Locale, type RouteId } from '../config/site.ts';
+import { useTranslations } from '../i18n/index.ts';
+
+interface Props {
+  locale: Locale;
+  routeId: RouteId;
+  entry?: string;
+  availableLocales?: Locale[];
+  class?: string;
+}
+
+const { locale, routeId, entry, availableLocales, class: className } = Astro.props;
+const t = useTranslations(locale);
+
+const other = LOCALES.find((candidate) => candidate !== locale) ?? locale;
+const counterpartExists = !availableLocales || availableLocales.includes(other);
+const href = counterpartExists ? routePath(routeId, other, entry) : routePath(routeId, other);
+
+/**
+ * The accessible name has to contain the visible text, or voice-control users
+ * cannot say what they see ("click Magyar") — so the language name comes first
+ * and the description follows, rather than replacing it.
+ */
+const ariaLabel = `${t.meta.switchTo} — ${t.meta.switchToLabel}`;
+---
+
+<a
+  href={href}
+  hreflang={other}
+  lang={other}
+  rel="alternate"
+  data-lang-switch={other}
+  class:list={[
+    'inline-flex items-center gap-1.5 rounded-pill border border-line bg-surface px-3 py-1.5 text-sm font-medium text-ink transition-colors hover:border-navy hover:text-navy',
+    className,
+  ]}
+  aria-label={ariaLabel}
+>
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8" />
+    <path d="M3 12h18M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18" stroke="currentColor" stroke-width="1.8" />
+  </svg>
+  {t.meta.switchTo}
+</a>
+
+<script>
+  // Functional only: remember the language the reader chose. No consent needed,
+  // and it is never sent anywhere. See the cookie policy.
+  document.querySelectorAll<HTMLAnchorElement>('[data-lang-switch]').forEach((link) => {
+    link.addEventListener('click', () => {
+      try {
+        localStorage.setItem('cf-lang', link.dataset.langSwitch ?? 'en');
+      } catch {
+        /* private mode: preference simply is not remembered */
+      }
+    });
+  });
+</script>

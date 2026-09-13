@@ -1,0 +1,333 @@
+---
+/**
+ * Small illustrations for the "What it does" cards.
+ *
+ * Each one shows the thing its card claims, using the app's own obstacle
+ * symbols where an obstacle appears — so the pole on a card and the pole in a
+ * course plan are the same drawing. Everything is token-coloured; the motion is
+ * slow and looping, and stops entirely under prefers-reduced-motion.
+ */
+import { formatMetres } from '../i18n/index.ts';
+import { symbolMarkup } from '../lib/course-plan/symbols.ts';
+import type { Locale } from '../config/site.ts';
+
+interface Props {
+  kind: 'arena' | 'place' | 'distance' | 'export';
+  locale: Locale;
+  class?: string;
+}
+
+const { kind, locale, class: className } = Astro.props;
+
+/** The distance label is written the way each locale writes it: 7.5 m / 7,5 m. */
+const distanceLabel = formatMetres(7.5, locale, 1);
+---
+
+<div class:list={['cf-card-art', `cf-art-${kind}`, className]} aria-hidden="true">
+  {
+    kind === 'arena' && (
+      <svg viewBox="0 0 200 96" width="200" height="96" fill="none">
+        {/*
+          The arena resizes from its left edge, so the left-hand height dimension
+          stays put and only the right edge travels. Whatever belongs to that
+          right edge — the width dimension's end tick included — moves with it,
+          or it sits stranded while the line stretches underneath.
+          non-scaling-stroke keeps the border and grid an even weight while the
+          group is squashed horizontally.
+        */}
+        <g class="cf-arena-box">
+          <rect
+            x="26" y="16" width="148" height="56" rx="3"
+            fill="var(--cf-surface-sunken)" stroke="var(--cf-navy)" stroke-width="2"
+            vector-effect="non-scaling-stroke"
+          />
+          <path
+            d="M50 16V72M74 16V72M98 16V72M122 16V72M146 16V72M26 34H174M26 53H174"
+            stroke="var(--cf-plan-grid)" stroke-width="1.5" vector-effect="non-scaling-stroke"
+          />
+          <path
+            d="M26 84H174" stroke="var(--cf-gold)" stroke-width="2"
+            stroke-linecap="round" vector-effect="non-scaling-stroke"
+          />
+        </g>
+        {/* The end tick rides with the edge it measures. */}
+        <path
+          class="cf-arena-edge" d="M174 80V88"
+          stroke="var(--cf-gold)" stroke-width="2" stroke-linecap="round"
+        />
+        {/* Fixed left edge: start tick and the height dimension. */}
+        <g stroke="var(--cf-gold)" stroke-width="2" stroke-linecap="round">
+          <path d="M26 80V88" />
+          <path d="M14 16V72M10 16H18M10 72H18" />
+        </g>
+      </svg>
+    )
+  }
+
+  {
+    kind === 'place' && (
+      <svg viewBox="0 0 200 96" width="200" height="96" fill="none">
+        {/* The rotation ring and handle the app puts around a selected object. */}
+        <circle cx="100" cy="48" r="30" stroke="var(--cf-navy)" stroke-width="1.5" stroke-dasharray="3 4" opacity="0.35" />
+        <g class="cf-place-turn">
+          <g transform="translate(100 48) scale(11)">
+            <Fragment set:html={symbolMarkup('vertical', 4.2, 0.8)} />
+          </g>
+          <circle class="cf-place-handle" cx="100" cy="18" r="5" fill="var(--cf-gold)" stroke="var(--cf-navy)" stroke-width="1.5" />
+        </g>
+      </svg>
+    )
+  }
+
+  {
+    kind === 'distance' && (
+      <svg viewBox="0 0 200 96" width="200" height="96" fill="none">
+        {/* Rotated 90 degrees: the ride runs along the dashed line, so the poles
+            have to lie across it, exactly as they would in the arena. */}
+        <g transform="translate(36 48) rotate(90) scale(12)">
+          <Fragment set:html={symbolMarkup('vertical', 3.4, 0.8)} />
+        </g>
+        <g transform="translate(164 48) rotate(90) scale(12)">
+          <Fragment set:html={symbolMarkup('oxer', 3.4, 1.4)} />
+        </g>
+        {/* The line between them, drawing itself over and over. */}
+        <path
+          class="cf-distance-line"
+          d="M49 48H150"
+          stroke="var(--cf-plan-route-ink)"
+          stroke-width="2"
+          stroke-dasharray="6 5"
+          stroke-linecap="round"
+          opacity="0.55"
+        />
+        <g class="cf-distance-label">
+          <rect x="72" y="34" width="56" height="22" rx="11" fill="var(--cf-surface)" stroke="var(--cf-line, var(--cf-border))" stroke-width="1.5" />
+          <text
+            x="100"
+            y="49"
+            text-anchor="middle"
+            font-size="12"
+            font-weight="700"
+            font-family="var(--cf-font-display)"
+            fill="var(--cf-navy)"
+          >
+            {distanceLabel}
+          </text>
+        </g>
+      </svg>
+    )
+  }
+
+  {
+    kind === 'export' && (
+      <svg viewBox="0 0 200 96" width="200" height="96" fill="none">
+        {/* The finished plan as a sheet, with a copy of it leaving to the right. */}
+        <rect x="30" y="14" width="70" height="68" rx="6" fill="var(--cf-surface)" stroke="var(--cf-navy)" stroke-width="2" />
+        <rect x="39" y="23" width="52" height="34" rx="2" fill="var(--cf-surface-sunken)" />
+        <path d="M45 41C52 27 70 53 86 35" stroke="var(--cf-plan-route-ink)" stroke-width="1.8" stroke-dasharray="4 3" opacity="0.6" />
+        <path d="M39 66H73M39 74H62" stroke="var(--cf-plan-grid)" stroke-width="3" stroke-linecap="round" />
+        {/* The arrow travels first, its head lands, then the copy arrives. As one
+            group they appeared together, which read as a glitch rather than a
+            journey. */}
+        <path
+          class="cf-export-path"
+          d="M106 62C124 64 136 52 143 40"
+          stroke="var(--cf-gold)"
+          stroke-width="3"
+          stroke-linecap="round"
+          fill="none"
+        />
+        <path
+          class="cf-export-head"
+          d="M133 39L145 36L147 48"
+          stroke="var(--cf-gold)"
+          stroke-width="3"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          fill="none"
+        />
+        <g class="cf-export-copy">
+          <rect x="150" y="12" width="34" height="44" rx="4" fill="var(--cf-surface)" stroke="var(--cf-navy)" stroke-width="2" />
+          <path d="M157 24H177M157 32H177M157 40H170" stroke="var(--cf-plan-grid)" stroke-width="2.5" stroke-linecap="round" />
+        </g>
+      </svg>
+    )
+  }
+</div>
+
+<style>
+  .cf-card-art {
+    display: flex;
+    justify-content: center;
+    border-radius: var(--cf-radius-md);
+    background: var(--cf-canvas);
+    padding: var(--cf-space-2) var(--cf-space-3);
+  }
+  .cf-card-art svg {
+    display: block;
+    width: 100%;
+    max-width: 17rem;
+    height: auto;
+  }
+
+  /* Arena: resizes from the left edge, and the right tick keeps up with it.
+     148 user units wide x (1 - 0.82) = 26.64 units of travel. */
+  .cf-arena-box {
+    transform-box: view-box;
+    transform-origin: 26px 48px;
+    animation: cf-arena-resize 6s ease-in-out infinite;
+  }
+  .cf-arena-edge {
+    transform-box: view-box;
+    animation: cf-arena-edge 6s ease-in-out infinite;
+  }
+  @keyframes cf-arena-resize {
+    0%,
+    100% {
+      transform: scaleX(1);
+    }
+    50% {
+      transform: scaleX(0.82);
+    }
+  }
+  @keyframes cf-arena-edge {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    50% {
+      transform: translateX(-26.64px);
+    }
+  }
+
+  /* Placement: the obstacle turns under the rotation handle. */
+  .cf-place-turn {
+    transform-box: view-box;
+    transform-origin: 100px 48px;
+    animation: cf-place-turn 6s ease-in-out infinite;
+  }
+  @keyframes cf-place-turn {
+    0%,
+    100% {
+      transform: rotate(-22deg);
+    }
+    50% {
+      transform: rotate(22deg);
+    }
+  }
+
+  /* Distance: the line draws in, then the label lands. */
+  .cf-distance-line {
+    stroke-dashoffset: 101;
+    animation: cf-distance-draw 6s ease-in-out infinite;
+  }
+  @keyframes cf-distance-draw {
+    0% {
+      stroke-dashoffset: 101;
+    }
+    35%,
+    100% {
+      stroke-dashoffset: 0;
+    }
+  }
+  .cf-distance-label {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: cf-distance-pop 6s ease-in-out infinite;
+  }
+  @keyframes cf-distance-pop {
+    0%,
+    30% {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    45%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* Export: the arrow draws out of the sheet, the head lands, the copy arrives. */
+  .cf-export-path {
+    stroke-dasharray: 56;
+    stroke-dashoffset: 56;
+    animation: cf-export-draw 5s ease-in-out infinite;
+  }
+  @keyframes cf-export-draw {
+    0%,
+    8% {
+      stroke-dashoffset: 56;
+    }
+    40%,
+    88% {
+      stroke-dashoffset: 0;
+    }
+    100% {
+      stroke-dashoffset: 56;
+    }
+  }
+  .cf-export-head {
+    opacity: 0;
+    animation: cf-export-head 5s ease-in-out infinite;
+  }
+  @keyframes cf-export-head {
+    0%,
+    36% {
+      opacity: 0;
+    }
+    46%,
+    88% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  .cf-export-copy {
+    transform-box: fill-box;
+    transform-origin: center;
+    opacity: 0;
+    animation: cf-export-copy 5s ease-in-out infinite;
+  }
+  @keyframes cf-export-copy {
+    0%,
+    48% {
+      opacity: 0;
+      transform: scale(0.82);
+    }
+    62%,
+    88% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(1);
+    }
+  }
+
+  /* The global reduced-motion rule only shortens durations, which would freeze
+     these on whichever frame is last. Stop them on a complete, readable state. */
+  @media (prefers-reduced-motion: reduce) {
+    .cf-arena-box,
+    .cf-arena-edge,
+    .cf-place-turn,
+    .cf-distance-line,
+    .cf-distance-label,
+    .cf-export-path,
+    .cf-export-head,
+    .cf-export-copy {
+      animation: none;
+    }
+    .cf-distance-line,
+    .cf-export-path {
+      stroke-dashoffset: 0;
+    }
+    .cf-distance-label,
+    .cf-export-head,
+    .cf-export-copy {
+      opacity: 1;
+    }
+  }
+</style>
