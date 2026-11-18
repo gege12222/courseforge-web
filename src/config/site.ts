@@ -31,8 +31,20 @@ export const SITE_URL = (
  */
 export const SITE_URL_IS_PLACEHOLDER = SITE_URL === PLACEHOLDER_ORIGIN;
 
+/** Production stays indexable; preview branches and explicit staging builds don't. */
+export const SITE_NOINDEX = SITE_URL_IS_PLACEHOLDER ||
+  (import.meta.env?.SITE_NOINDEX ?? process.env.SITE_NOINDEX) === 'true' ||
+  (process.env.CF_PAGES === '1' && !!process.env.CF_PAGES_BRANCH &&
+    process.env.CF_PAGES_BRANCH !== (process.env.CF_PAGES_PRODUCTION_BRANCH ?? 'main'));
+
 /** Waitlist confirmations and the privacy contact point (ANSWERS.md #14). */
 export const CONTACT_EMAIL = import.meta.env?.CONTACT_EMAIL ?? process.env.CONTACT_EMAIL ?? 'support@courseforge.hu';
+
+/** Optional account-issued tokens; no verification claim without a real token. */
+export const SEARCH_VERIFICATION = {
+  google: import.meta.env?.GOOGLE_SITE_VERIFICATION ?? process.env.GOOGLE_SITE_VERIFICATION,
+  bing: import.meta.env?.BING_SITE_VERIFICATION ?? process.env.BING_SITE_VERIFICATION,
+};
 
 export const SITE_NAME = 'CourseForge';
 
@@ -61,17 +73,29 @@ export const BUSINESS = {
 /** Verified against the Flutter app — see AUDIT.md §1d. Do not embellish. */
 export const APP = {
   name: 'CourseForge',
-  version: '0.1.0',
-  /** Pre-release. Nothing on the site may imply a store listing exists. */
-  released: false,
-  minIos: '12.0',
+  /** iOS listing verified at launch; Android versions can differ. */
+  versionIos: '1.0.1',
+  released: true,
+  minIos: '15.6',
   minAndroid: '5.0',
   minAndroidApi: 21,
-  /** Still com.example.* in the Flutter project, marked TODO(release). */
-  bundleIdIos: 'BUNDLE_ID_PENDING',
-  bundleIdAndroid: 'BUNDLE_ID_PENDING',
+  bundleIdIos: 'com.example.courseforge',
+  bundleIdAndroid: 'com.gege.courseforge',
+  appStoreId: '6798715396',
   appleTeamId: 'TEAMID_PENDING',
   androidSha256: 'SHA256_PENDING',
+} as const;
+
+/** Public listing URLs remain usable without JavaScript and on desktop. */
+export const STORES = {
+  apple: {
+    web: `https://apps.apple.com/us/app/courseforge/id${APP.appStoreId}`,
+    native: `itms-apps://apps.apple.com/app/id${APP.appStoreId}`,
+  },
+  google: {
+    web: `https://play.google.com/store/apps/details?id=${APP.bundleIdAndroid}`,
+    native: `intent://details?id=${APP.bundleIdAndroid}#Intent;scheme=market;package=com.android.vending;S.browser_fallback_url=${encodeURIComponent(`https://play.google.com/store/apps/details?id=${APP.bundleIdAndroid}`)};end`,
+  },
 } as const;
 
 /** The downloadable course file. Extension and format from AUDIT.md §1c. */
@@ -124,6 +148,7 @@ export const ROUTES = {
   home: { en: '', hu: '' },
   features: { en: 'features', hu: 'funkciok' },
   pricing: { en: 'pricing', hu: 'arak' },
+  about: { en: 'about', hu: 'rolunk' },
   privacy: { en: 'privacy', hu: 'adatvedelem' },
   terms: { en: 'terms', hu: 'aszf' },
   impressum: { en: 'impresszum', hu: 'impresszum' },
@@ -136,7 +161,9 @@ export function routePath(id: RouteId, locale: Locale, entry?: string): string {
   const slug = ROUTES[id][locale];
   const prefix = locale === DEFAULT_LOCALE ? '' : `/${locale}`;
   const segments = [slug, entry].filter(Boolean).join('/');
-  return segments ? `${prefix}/${segments}` : prefix || '/';
+  // Cloudflare Pages serves directory routes with a trailing slash. Match the
+  // final response URL in links, canonicals, hreflang and sitemap entries.
+  return segments ? `${prefix}/${segments}/` : `${prefix}/`;
 }
 
 /** Absolute URL for a route — canonicals, hreflang, OG, sitemap. */

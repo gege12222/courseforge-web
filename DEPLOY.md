@@ -1,5 +1,10 @@
 # Deploying courseforge-web
 
+For the current launch/SEO release, run `npm run verify` before deploying and
+follow [SEO.md](SEO.md) for search verification, live crawler checks and remaining
+account settings. Set `SITE_NOINDEX=true` in the Cloudflare **Preview** environment
+only; leave it unset in **Production**. Canonicals keep the production domain.
+
 Cloudflare Pages, connected to GitHub, rebuilding on every push. Static output,
 one Pages Function for the waitlist, no other server.
 

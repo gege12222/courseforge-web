@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { SITE_URL, SITE_URL_IS_PLACEHOLDER } from '../config/site.ts';
+import { SITE_URL, SITE_NOINDEX } from '../config/site.ts';
 
 /**
  * While the domain is a placeholder, robots.txt disallows everything and the SEO
@@ -7,8 +7,8 @@ import { SITE_URL, SITE_URL_IS_PLACEHOLDER } from '../config/site.ts';
  * stops crawling, noindex stops indexing of anything already fetched.
  */
 export const GET: APIRoute = () => {
-  const body = SITE_URL_IS_PLACEHOLDER
-    ? ['# Placeholder domain — see OPEN_QUESTIONS.md #7', 'User-agent: *', 'Disallow: /', ''].join('\n')
+  const body = SITE_NOINDEX
+    ? ['# Preview or staging build', 'User-agent: *', 'Disallow: /', ''].join('\n')
     : [
         'User-agent: *',
         'Allow: /',

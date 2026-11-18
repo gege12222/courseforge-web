@@ -4,11 +4,13 @@
  */
 import {
   APP,
+  BUSINESS,
   DEFAULT_LOCALE,
   LOCALES,
   ROUTES,
   SITE_NAME,
   SITE_URL,
+  STORES,
   routePath,
   routeUrl,
   type Locale,
@@ -43,7 +45,23 @@ export function organizationSchema() {
     '@type': 'Organization',
     '@id': `${SITE_URL}/#organization`,
     name: SITE_NAME,
+    legalName: BUSINESS.name,
     url: `${SITE_URL}/`,
+    email: BUSINESS.email,
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: 'Béke utca 145.',
+      addressLocality: 'Piliscsév',
+      postalCode: '2519',
+      addressCountry: 'HU',
+    },
+    contactPoint: {
+      '@type': 'ContactPoint',
+      contactType: 'customer support',
+      email: BUSINESS.email,
+      availableLanguage: [...LOCALES],
+    },
+    sameAs: [STORES.apple.web, STORES.google.web],
     logo: {
       '@type': 'ImageObject',
       url: absolute('/icon-512.png'),
@@ -56,7 +74,7 @@ export function organizationSchema() {
 export function websiteSchema(locale: Locale) {
   return {
     '@type': 'WebSite',
-    '@id': `${SITE_URL}/#website`,
+    '@id': `${SITE_URL}/#website-${locale}`,
     name: SITE_NAME,
     url: absolute(routePath('home', locale)),
     inLanguage: locale,
@@ -71,17 +89,19 @@ export function softwareApplicationSchema(locale: Locale, description: string) {
     name: APP.name,
     applicationCategory: 'DesignApplication',
     applicationSubCategory: 'Show jumping course design',
-    operatingSystem: `iOS ${APP.minIos}+, Android ${APP.minAndroid}+`,
-    softwareVersion: APP.version,
+    operatingSystem: ['iOS', 'Android'],
     description,
     inLanguage: [...LOCALES],
     url: absolute(routePath('home', locale)),
     publisher: { '@id': `${SITE_URL}/#organization` },
+    downloadUrl: [STORES.apple.web, STORES.google.web],
+    installUrl: [STORES.apple.web, STORES.google.web],
+    isAccessibleForFree: true,
     offers: {
       '@type': 'Offer',
       price: '0',
       priceCurrency: 'EUR',
-      availability: 'https://schema.org/PreOrder',
+      availability: 'https://schema.org/InStock',
     },
   };
 }

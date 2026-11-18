@@ -27,6 +27,7 @@ export const hu: UIStrings = {
     home: 'Főoldal',
     features: 'Funkciók',
     pricing: 'Árak',
+    about: 'Rólunk',
     courses: 'Pályák',
     blog: 'Blog',
     menu: 'Menü',
@@ -54,7 +55,7 @@ export const hu: UIStrings = {
     heroTitle: 'Pályát tervezni? Gyerekjáték.',
     heroLead: 'Tölts kevesebb időt a pálya tervezésével, és többet azzal, ami igazán számít.',
     heroSub:
-      'Gyors, egyszerű és precíz díjugrató pályatervezés – bárhol, közvetlenül a telefonodról.',
+      'A CourseForge díjugrató pályatervező lovasoknak, edzőknek és pályatervezőknek. Tervezz és ossz meg pályákat iPhone-on, iPaden vagy Androidon, akár internet nélkül.',
     heroScreenshotAlt: 'A CourseForge szerkesztő számozott pályával és a javasolt nyomvonallal',
     heroSceneAlt:
       'Egy meredek és egy oxer, köztük ívelt patanyomsorral, amely a ló által belovagolt vonalat mutatja.',
@@ -94,6 +95,45 @@ export const hu: UIStrings = {
     coursesTeaserTitle: 'Kész pályák',
     coursesTeaserLead: 'Töltsd le egy teljes pályát, nyisd meg a CourseForge-ban, aztán lovagold vagy alakítsd át.',
     coursesTeaserCta: 'Pályák megtekintése',
+    faqTitle: 'Gyakori kérdések a CourseForge-ról',
+    faq: [
+      {
+        question: 'Mi a CourseForge?',
+        answer: 'A CourseForge díjugrató pályatervező alkalmazás iPhone-ra, iPadre és Androidra. Akadályokat helyezhetsz el és számozhatsz meg, nyomvonalat tervezhetsz, távolságokat ellenőrizhetsz, a kész pályatervet pedig exportálhatod.',
+      },
+      {
+        question: 'Ingyenes a CourseForge?',
+        answer: 'Igen. Az ingyenes, hirdetéseket tartalmazó változatban 50 × 60 méteres arénában tervezhetsz, menthetsz, importálhatsz és exportálhatsz pályákat. Az egyszeri alkalmazáson belüli vásárlással elérhető Lifetime Pro eltávolítja a hirdetéseket, és feloldja az egyedi arénaméretet, a talajszíneket és a további elemeket. Nincs előfizetés. Az aktuális helyi árat az áruház mutatja.',
+      },
+      {
+        question: 'Tervezhetek internet és regisztráció nélkül?',
+        answer: 'Igen. A pályák létrehozása és szerkesztése internet nélkül is működik, és nem kell CourseForge-fiókot létrehoznod. A pályák a saját eszközödön tárolódnak. A hirdetések és a Pro-vásárlások külső szolgáltatásokat használnak, amelyekhez internetre lehet szükség.',
+      },
+      {
+        question: 'Kinyomtathatom vagy megoszthatom a pályámat?',
+        answer: 'Igen. Exportálhatsz nyomtatható PDF-et, megosztható képet vagy szerkeszthető CourseForge-fájlt. Utóbbit egy másik CourseForge-felhasználó importálhatja és módosíthatja.',
+      },
+      {
+        question: 'Milyen nyelveket és mértékegységeket támogat az app?',
+        answer: 'Az alkalmazás magyarul és angolul használható, méterben vagy lábban és hüvelykben. A nyelvet és a mértékegységet az appban válthatod át.',
+      },
+    ],
+  },
+
+  about: {
+    title: 'A CourseForge-ról — díjugrató pályatervezés',
+    description: 'Ismerd meg a CourseForge magyar és angol nyelvű díjugrató pályatervezőt, amelynek szolgáltatója Bába Gergely e.v. Appinformációk, támogatás és áruházi linkek.',
+    heading: 'A CourseForge-ról',
+    intro: 'A CourseForge lovasoknak, edzőknek és pályatervezőknek segít átlátható díjugrató pályatervet készíteni az edzésötleteikből, iPhone-on, iPaden és Androidon.',
+    productTitle: 'Az aréna elrendezésétől a megosztható pályatervig',
+    productBody: 'Helyezd el és forgasd az akadályokat, állítsd be a pályasorrendet, tervezd meg a nyomvonalat és ellenőrizd a távolságokat. A pályákat az eszközödön mentheted, majd nyomtatható PDF-ként, képként vagy szerkeszthető CourseForge-fájlként exportálhatod. A szerkesztés internet és CourseForge-fiók nélkül is működik.',
+    providerTitle: 'Ki áll a CourseForge mögött?',
+    providerBody: 'A CourseForge szolgáltatója Bába Gergely e.v., piliscsévi székhelyű magyar egyéni vállalkozó. Az alkalmazás és ez a weboldal magyarul és angolul érhető el.',
+    supportTitle: 'Segítség és visszajelzés',
+    supportBody: 'Az alkalmazással kapcsolatos kérdésekkel, hibajelzéssel vagy visszajelzéssel ezen a címen érhetsz el:',
+    detailsLink: 'A szolgáltató részletes adatai',
+    exploreTitle: 'Nézd meg az alkalmazást használat közben',
+    exploreBody: 'A Funkciók oldalon valódi képernyőképeket és a pályaszerkesztő részletes bemutatását találod. Az Árak oldalon összehasonlíthatod az ingyenes és a Lifetime Pro változatot.',
   },
 
   features: {
@@ -302,11 +342,11 @@ export const hu: UIStrings = {
 
   store: {
     title: 'A CourseForge letöltése',
-    appleAlt: 'Hamarosan az App Store-ban',
-    googleAlt: 'Hamarosan a Google Play-en',
-    appleLine1: 'Hamarosan az',
+    appleAlt: 'A CourseForge letöltése az App Store-ból',
+    googleAlt: 'A CourseForge letöltése a Google Playről',
+    appleLine1: 'Letöltés az',
     appleLine2: 'App Store-ban',
-    googleLine1: 'Hamarosan a',
+    googleLine1: 'Letöltés a',
     googleLine2: 'Google Play-en',
   },
 

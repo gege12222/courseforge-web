@@ -1,90 +1,53 @@
 ---
-/**
- * Pre-launch store buttons.
- *
- * These are deliberately NOT the official "Download on the App Store" and
- * "Get it on Google Play" badge artwork. Both Apple's and Google's brand
- * guidelines require their badges to link to a live store listing and forbid
- * altering the artwork or its wording — so relabelling a badge "Coming soon"
- * and pointing it at a waitlist would breach both. These are neutral buttons
- * that say what is true; the official artwork drops in at launch, when it will
- * finally have somewhere legitimate to point.
- *
- * Sizing still follows the guidelines so the swap is a like-for-like change:
- * minimum height 40 px, clear space of at least 10% of the badge height on all
- * sides, and the two buttons at matching heights.
- */
-import { type Locale } from '../config/site.ts';
+import { STORES, type Locale } from '../config/site.ts';
 import { useTranslations } from '../i18n/index.ts';
 
 interface Props {
   locale: Locale;
-  /**
-   * Where the buttons point. Omit it and they render as plain non-interactive
-   * markers — which is what they are while there is no waitlist and no store
-   * listing to send anyone to. A button that looks clickable and goes nowhere
-   * is worse than one that does not look clickable.
-   */
-  href?: string;
   class?: string;
 }
 
-const { locale, href, class: className } = Astro.props;
+const { locale, class: className } = Astro.props;
 const t = useTranslations(locale);
-const Tag = href ? 'a' : 'div';
 ---
 
 <div class:list={['flex flex-wrap gap-3', className]}>
-    <Tag
-      href={href}
-      aria-label={href ? t.store.appleAlt : undefined}
-      class:list={[
-        'inline-flex min-h-[52px] items-center gap-3 rounded-md bg-navy px-5 py-2.5 text-cream',
-        href && 'transition-opacity hover:opacity-90',
-      ]}
-    >
-      {/* viewBox cropped to the glyph: the apple only fills the middle of a
-          0 0 22 26 box, so at the same nominal size it rendered smaller than the
-          Play mark beside it. Cropping makes both marks 24 px tall. */}
-      <svg width="19" height="24" viewBox="4.1 3.6 13.9 17.8" fill="currentColor" aria-hidden="true">
-        <path
-          d="M15.6 13.6c0-2.6 2.1-3.9 2.2-4-.9-1.6-2.6-2.1-3.3-2.2-1.4-.1-2.6.8-3.3.8-.7 0-1.7-.8-2.9-.8-1.9 0-4 1.5-4 4.5 0 1.9.7 3.9 1.6 5.3.8 1.2 1.5 2.2 2.5 2.2s1.4-.6 2.6-.6 1.5.6 2.6.6c1 0 1.7-1 2.4-2.1.6-.9.9-1.8 1-1.9-.1 0-2-.8-2-3.8Zm-2.5-7c.6-.7 1-1.6.9-2.6-.9 0-1.9.6-2.5 1.3-.5.6-1 1.6-.9 2.5 1 .1 2-.5 2.5-1.2Z"
-        ></path>
-      </svg>
-      <span class="text-left leading-tight">
-        <span class="block text-[0.68rem] uppercase tracking-wide opacity-85">{t.store.appleLine1}</span>
-        <span class="block font-display text-base font-bold">{t.store.appleLine2}</span>
-      </span>
-    </Tag>
-
-    <Tag
-      href={href}
-      aria-label={href ? t.store.googleAlt : undefined}
-      class:list={[
-        'inline-flex min-h-[52px] items-center gap-3 rounded-md bg-navy px-5 py-2.5 text-cream',
-        href && 'transition-opacity hover:opacity-90',
-      ]}
-    >
-      {/*
-        The Google Play mark, monochrome. Drawn as the four facets that make up
-        the real icon — the two wings meeting the spine on the left and the point
-        on the right — so the silhouette is right, but in one colour rather than
-        Google's four. Their brand guidelines do not permit recolouring the
-        official artwork, and the official artwork may only link to a live store
-        listing, which does not exist yet. Monochrome also matches the Apple
-        glyph beside it.
-      */}
-      <svg width="22" height="24" viewBox="0 0 24 26" fill="currentColor" aria-hidden="true">
-        <path
-          d="M2.4 1.1a1.7 1.7 0 0 0-.8 1.5v20.8c0 .63.3 1.19.8 1.5L13.6 13.6 2.4 1.1Z"
-          opacity=".95"></path>
-        <path d="M17.4 9.3 4.4.55 3.98.33a1.72 1.72 0 0 0-1.58.77L13.6 13.6l3.8-4.3Z" opacity=".72"></path>
-        <path d="M17.4 17.9l-3.8-4.3L2.4 26a1.72 1.72 0 0 0 1.58.77l.42-.22 13-8.65Z" opacity=".86"></path>
-        <path d="M17.4 9.3 13.6 13.6l3.8 4.3 4.15-2.76a1.83 1.83 0 0 0 0-3.08L17.4 9.3Z" opacity=".62"></path>
-      </svg>
-      <span class="text-left leading-tight">
-        <span class="block text-[0.68rem] uppercase tracking-wide opacity-85">{t.store.googleLine1}</span>
-        <span class="block font-display text-base font-bold">{t.store.googleLine2}</span>
-      </span>
-    </Tag>
+  <a
+    href={STORES.apple.web}
+    data-store="apple"
+    data-native-url={STORES.apple.native}
+    aria-label={t.store.appleAlt}
+    class="inline-flex min-h-[52px] items-center gap-3 rounded-md bg-navy px-5 py-2.5 text-cream transition-opacity hover:opacity-90"
+  >
+    <svg width="19" height="24" viewBox="4.1 3.6 13.9 17.8" fill="currentColor" aria-hidden="true">
+      <path d="M15.6 13.6c0-2.6 2.1-3.9 2.2-4-.9-1.6-2.6-2.1-3.3-2.2-1.4-.1-2.6.8-3.3.8-.7 0-1.7-.8-2.9-.8-1.9 0-4 1.5-4 4.5 0 1.9.7 3.9 1.6 5.3.8 1.2 1.5 2.2 2.5 2.2s1.4-.6 2.6-.6 1.5.6 2.6.6c1 0 1.7-1 2.4-2.1.6-.9.9-1.8 1-1.9-.1 0-2-.8-2-3.8Zm-2.5-7c.6-.7 1-1.6.9-2.6-.9 0-1.9.6-2.5 1.3-.5.6-1 1.6-.9 2.5 1 .1 2-.5 2.5-1.2Z" />
+    </svg>
+    <span class="text-left leading-tight">
+      <span class="block text-sm opacity-85">{t.store.appleLine1}</span>
+      <span class="block font-display text-base font-bold">{t.store.appleLine2}</span>
+    </span>
+  </a>
+  <a
+    href={STORES.google.web}
+    data-store="google"
+    data-native-url={STORES.google.native}
+    aria-label={t.store.googleAlt}
+    class="inline-flex min-h-[52px] items-center gap-3 rounded-md bg-navy px-5 py-2.5 text-cream transition-opacity hover:opacity-90"
+  >
+    <svg width="22" height="24" viewBox="0 0 24 26" fill="currentColor" aria-hidden="true">
+      <path d="M2.4 1.1a1.7 1.7 0 0 0-.8 1.5v20.8c0 .63.3 1.19.8 1.5L13.6 13.6 2.4 1.1Z" opacity=".95" />
+      <path d="M17.4 9.3 4.4.55 3.98.33a1.72 1.72 0 0 0-1.58.77L13.6 13.6l3.8-4.3Z" opacity=".72" />
+      <path d="M17.4 17.9l-3.8-4.3L2.4 26a1.72 1.72 0 0 0 1.58.77l.42-.22 13-8.65Z" opacity=".86" />
+      <path d="M17.4 9.3 13.6 13.6l3.8 4.3 4.15-2.76a1.83 1.83 0 0 0 0-3.08L17.4 9.3Z" opacity=".62" />
+    </svg>
+    <span class="text-left leading-tight">
+      <span class="block text-sm opacity-85">{t.store.googleLine1}</span>
+      <span class="block font-display text-base font-bold">{t.store.googleLine2}</span>
+    </span>
+  </a>
 </div>
+
+<script>
+  import { enhanceStoreLinks } from '../lib/store-links';
+  enhanceStoreLinks();
+</script>

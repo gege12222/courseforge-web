@@ -17,7 +17,7 @@ if (SITE_URL_IS_PLACEHOLDER) {
 export default defineConfig({
   site: SITE_URL,
   output: 'static',
-  trailingSlash: 'never',
+  trailingSlash: 'always',
 
   i18n: {
     locales: [...LOCALES],
@@ -36,8 +36,11 @@ export default defineConfig({
         defaultLocale: DEFAULT_LOCALE,
         locales: Object.fromEntries(LOCALES.map((locale) => [locale, locale])),
       },
-      // OG images are endpoints, not pages.
-      filter: (page) => !new URL(page).pathname.startsWith('/og/'),
+      // Only canonical public pages belong in the sitemap, never endpoints.
+      filter: (page) => {
+        const route = resolveRoute(new URL(page).pathname);
+        return !!route && !route.entry;
+      },
       serialize(item) {
         const route = resolveRoute(new URL(item.url).pathname);
         if (!route) return item;
@@ -47,6 +50,7 @@ export default defineConfig({
         }));
         return {
           ...item,
+          url: routeUrl(route.id, route.locale, route.entry),
           links: [...links, { lang: 'x-default', url: routeUrl(route.id, DEFAULT_LOCALE, route.entry) }],
         };
       },

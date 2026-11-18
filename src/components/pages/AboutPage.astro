@@ -1,0 +1,49 @@
+---
+import { BUSINESS, CONTACT_EMAIL, routePath, type Locale } from '../../config/site.ts';
+import { useTranslations } from '../../i18n/index.ts';
+import Base from '../../layouts/Base.astro';
+import StoreBadges from '../StoreBadges.astro';
+
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<Base {locale} routeId="about" title={t.about.title} description={t.about.description}>
+  <div class="mx-auto max-w-cf px-gutter py-12 sm:px-5">
+    <h1 class="text-3xl sm:text-4xl">{t.about.heading}</h1>
+    <p class="mt-4 max-w-measure-wide text-lg text-ink">{t.about.intro}</p>
+
+    <section class="mt-8 max-w-measure-wide">
+      <h2 class="text-2xl">{t.about.productTitle}</h2>
+      <p class="mt-3 text-ink-muted">{t.about.productBody}</p>
+    </section>
+
+    <section class="mt-8 max-w-measure-wide">
+      <h2 class="text-2xl">{t.about.providerTitle}</h2>
+      <p class="mt-3 text-ink-muted">{t.about.providerBody}</p>
+      <p class="mt-3 text-ink-muted">{BUSINESS.address}</p>
+      <a href={routePath('impressum', locale)} class="mt-3 inline-block text-navy underline underline-offset-4">{t.about.detailsLink}</a>
+    </section>
+
+    <section class="mt-8 max-w-measure-wide">
+      <h2 class="text-2xl">{t.about.supportTitle}</h2>
+      <p class="mt-3 text-ink-muted">{t.about.supportBody}</p>
+      <a href={`mailto:${CONTACT_EMAIL}`} class="mt-2 inline-block text-navy underline underline-offset-4">{CONTACT_EMAIL}</a>
+    </section>
+
+    <section class="mt-8 max-w-measure-wide">
+      <h2 class="text-2xl">{t.about.exploreTitle}</h2>
+      <p class="mt-3 text-ink-muted">{t.about.exploreBody}</p>
+      <nav class="mt-3 flex flex-wrap gap-5" aria-label={t.nav.menu}>
+        <a href={routePath('features', locale)} class="text-navy underline underline-offset-4">{t.nav.features}</a>
+        <a href={routePath('pricing', locale)} class="text-navy underline underline-offset-4">{t.nav.pricing}</a>
+      </nav>
+    </section>
+
+    <section class="mt-8">
+      <h2 class="text-2xl">{t.store.title}</h2>
+      <StoreBadges {locale} class="mt-4" />
+    </section>
+  </div>
+</Base>

@@ -1,0 +1,2 @@
+# Conventional sitemap entry point; Astro generates the index and URL sets.
+/sitemap.xml /sitemap-index.xml 301

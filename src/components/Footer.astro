@@ -1,6 +1,6 @@
 ---
 /**
- * One line: the copyright and the three legal pages.
+ * Crawlable navigation and legal pages, also usable without JavaScript.
  *
  * No language switcher — the header already carries one, and the page-pairing
  * props (`routeId`, `entry`, `availableLocales`) are still accepted so the
@@ -21,6 +21,9 @@ const t = useTranslations(locale);
 const year = 2026;
 
 const legal: { id: RouteId; label: string }[] = [
+  { id: 'features', label: t.nav.features },
+  { id: 'pricing', label: t.nav.pricing },
+  { id: 'about', label: t.nav.about },
   { id: 'privacy', label: t.footer.privacy },
   { id: 'terms', label: t.footer.terms },
   { id: 'impressum', label: t.footer.impressum },
@@ -33,7 +36,7 @@ const legal: { id: RouteId; label: string }[] = [
   >
     <p class="text-sm text-ink-muted">© {year} {t.footer.rights}</p>
 
-    <nav class="flex flex-wrap gap-x-5 gap-y-2" aria-label={t.footer.legal}>
+    <nav class="flex flex-wrap gap-x-5 gap-y-2" aria-label={t.nav.menu}>
       {
         legal.map((link) => (
           <a

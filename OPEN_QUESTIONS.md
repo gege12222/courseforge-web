@@ -1,5 +1,16 @@
 # Open questions and assumptions
 
+## Launch update — 18 November 2026
+
+The app is now released. The older pre-launch notes below are historical where
+they conflict with this update. Both store buttons now link to live listings and
+attempt native store handoffs on matching devices. iOS listing ID: `6798715396`;
+Android package: `com.gege.courseforge`. The iOS lookup lists bundle ID
+`com.example.courseforge`, version `1.0.1`, and minimum iOS `15.6`. The app schema
+now reports availability instead of pre-order. App-to-website association files
+still require verified signing/team details; opening a store does not depend on
+those files. See [SEO.md](SEO.md) for the current SEO audit and account tasks.
+
 Everything I had to decide without you, everything still outstanding, and one
 section you can hand straight to the app agent.
 

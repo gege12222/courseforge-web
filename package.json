@@ -15,7 +15,8 @@
     "check": "astro check && tsc -p functions --noEmit",
     "fonts": "python scripts/build-fonts.py",
     "favicons": "node scripts/build-favicons.mjs",
-    "verify": "npm run build && node scripts/verify-build.mjs",
+    "test:stores": "node --test scripts/store-links.test.mjs",
+    "verify": "npm run test:stores && npm run build && node scripts/verify-build.mjs",
     "fonts:check": "python scripts/check-fonts.py",
     "plans": "node scripts/preview-course-plans.mjs"
   },

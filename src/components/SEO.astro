@@ -7,7 +7,7 @@
  * graph. Organization and WebSite are added on every page automatically; the
  * page passes anything else.
  */
-import { SITE_NAME, SITE_URL_IS_PLACEHOLDER, type Locale, type RouteId } from '../config/site.ts';
+import { APP, SEARCH_VERIFICATION, SITE_NAME, SITE_URL, SITE_NOINDEX, type Locale, type RouteId } from '../config/site.ts';
 import {
   absolute,
   alternatesFor,
@@ -53,10 +53,23 @@ const alternates = alternatesFor(routeId, entry, availableLocales);
 const xDefault = alternates.find((a) => a.locale === 'en') ?? alternates[0];
 const ogImage = absolute(ogImagePath(locale, routeId, entry));
 const fullTitle = routeId === 'home' ? title : `${title} · ${SITE_NAME}`;
+const pageSchema = {
+  '@type': routeId === 'about' ? 'AboutPage' : 'WebPage',
+  '@id': `${canonical}#webpage`,
+  url: canonical,
+  name: fullTitle,
+  description,
+  inLanguage: locale,
+  isPartOf: { '@id': `${SITE_URL}/#website-${locale}` },
+  about: { '@id': `${SITE_URL}/#${routeId === 'about' ? 'organization' : 'app'}` },
+};
 ---
 
 <title>{fullTitle}</title>
 <meta name="description" content={description} />
+<meta name="apple-itunes-app" content={`app-id=${APP.appStoreId}`} />
+{SEARCH_VERIFICATION.google && <meta name="google-site-verification" content={SEARCH_VERIFICATION.google} />}
+{SEARCH_VERIFICATION.bing && <meta name="msvalidate.01" content={SEARCH_VERIFICATION.bing} />}
 
 {/* A page that must not be indexed has no business nominating a canonical or
     advertising translations — the 404 is served for every unmatched path, so
@@ -75,7 +88,7 @@ const fullTitle = routeId === 'home' ? title : `${title} · ${SITE_NAME}`;
 
 {/* The placeholder domain must never be indexed — see OPEN_QUESTIONS.md #7. */}
 {
-  noindex || SITE_URL_IS_PLACEHOLDER ? (
+  noindex || SITE_NOINDEX ? (
     <meta name="robots" content="noindex, nofollow" />
   ) : (
     <meta name="robots" content="index, follow, max-image-preview:large" />
@@ -117,4 +130,4 @@ const fullTitle = routeId === 'home' ? title : `${title} · ${SITE_NAME}`;
 <meta name="twitter:image" content={ogImage} />
 <meta name="twitter:image:alt" content={title} />
 
-<script type="application/ld+json" set:html={jsonLdGraph([organizationSchema(), websiteSchema(locale), ...schema])} is:inline />
+<script type="application/ld+json" set:html={jsonLdGraph([organizationSchema(), websiteSchema(locale), ...(!noindex ? [pageSchema] : []), ...schema])} is:inline />

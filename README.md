@@ -22,7 +22,8 @@ npm run dev        # http://localhost:4321
 | `npm run dev` | Dev server |
 | `npm run build` | `astro check` + `tsc` on the Pages Function, then the static build. A missing translation key fails here. |
 | `npm run preview` | Serve `dist/` locally |
-| `npm run verify` | Build, then check canonicals, hreflang, OG images and JSON-LD on every page |
+| `npm run verify` | Test store handoffs, build, and check static content, indexing, sitemap, links and metadata in both languages |
+| `npm run test:stores` | Test native store handoffs, HTTPS fallbacks and desktop behavior |
 | `npm run fonts` | Rebuild the Space Grotesk subset (needs Python + fontTools) |
 | `npm run favicons` | Rebuild the favicon PNGs from the brand SVG |
 
@@ -46,6 +47,7 @@ run them only when the brand assets change.
 - [`AUDIT.md`](AUDIT.md) — what was read out of the Flutter app, and what was not
 - [`ANSWERS.md`](ANSWERS.md) — the confirmed facts this site is built on
 - [`OPEN_QUESTIONS.md`](OPEN_QUESTIONS.md) — what is still unconfirmed
+- [`SEO.md`](SEO.md) — launch SEO changes, verification and remaining search/Cloudflare account steps
 
 ## Adding a page
 

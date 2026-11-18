@@ -2,6 +2,7 @@
 import { PRICING, type Locale } from '../../config/site.ts';
 import { useTranslations } from '../../i18n/index.ts';
 import Base from '../../layouts/Base.astro';
+import StoreBadges from '../StoreBadges.astro';
 
 interface Props {
   locale: Locale;
@@ -121,6 +122,8 @@ const tiers = [
       </ul>
 
       <p class="mt-6 max-w-measure-wide text-sm text-ink-muted">{t.pricing.priceNote}</p>
+      <h2 class="mt-8 text-2xl">{t.store.title}</h2>
+      <StoreBadges {locale} class="mt-4" />
     </div>
   </section>
 

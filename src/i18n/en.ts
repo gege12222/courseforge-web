@@ -24,6 +24,7 @@ export const en = {
     home: 'Home',
     features: 'Features',
     pricing: 'Pricing',
+    about: 'About',
     courses: 'Courses',
     blog: 'Blog',
     menu: 'Menu',
@@ -51,7 +52,7 @@ export const en = {
     heroTitle: 'Designing a course? Child’s play.',
     heroLead: 'Spend less time planning and more time on what really matters.',
     heroSub:
-      'Fast, simple and precise show jumping course design — anywhere, straight from your phone.',
+      'CourseForge is a show jumping course planner for riders, trainers and course designers. Create and share plans on iPhone, iPad and Android, even offline.',
     heroScreenshotAlt: 'The CourseForge editor showing a numbered course with the suggested route',
     heroSceneAlt:
       'A vertical and an oxer, with a curving trail of hoofprints showing the line the horse takes between them.',
@@ -91,6 +92,45 @@ export const en = {
     coursesTeaserTitle: 'Ready-made courses',
     coursesTeaserLead: 'Download a full course, open it in CourseForge, and ride it or edit it.',
     coursesTeaserCta: 'Browse the course library',
+    faqTitle: 'Questions about CourseForge',
+    faq: [
+      {
+        question: 'What is CourseForge?',
+        answer: 'CourseForge is a show jumping course design app for iPhone, iPad and Android. Place and number obstacles, plan riding lines, check distances and export a course plan.',
+      },
+      {
+        question: 'Is CourseForge free?',
+        answer: 'Yes. Free includes course design in a 50 × 60 m arena, saving, import and export, with ads. Lifetime Pro is a one-time in-app purchase that removes ads and unlocks custom arena dimensions, footing colours and more objects. There is no subscription. Your store shows the current local price.',
+      },
+      {
+        question: 'Can I design a course without internet or an account?',
+        answer: 'Yes. Core course creation and editing work offline, and no CourseForge account is required. Courses are stored on your device. Ads and Pro purchases use external services and may need internet.',
+      },
+      {
+        question: 'Can I print or share my course?',
+        answer: 'Yes. Export a PDF for printing, an image for sharing, or an editable CourseForge file that another CourseForge user can import and change.',
+      },
+      {
+        question: 'Which languages and units does the app support?',
+        answer: 'The app supports English and Hungarian, with metres or feet and inches. You can change the language and units in the app.',
+      },
+    ],
+  },
+
+  about: {
+    title: 'About CourseForge — show jumping course planning',
+    description: 'Meet CourseForge, the English and Hungarian show jumping course planner by Bába Gergely e.v. Find app information, support and the official store listings.',
+    heading: 'About CourseForge',
+    intro: 'CourseForge helps riders, trainers and course designers turn training ideas into clear show jumping course plans on iPhone, iPad and Android.',
+    productTitle: 'From an arena layout to a shareable plan',
+    productBody: 'Place and rotate obstacles, set the jumping order, plan riding lines and check distances. Save courses on your device, then export a printable PDF, an image or an editable CourseForge file. Core editing works offline, without a CourseForge account.',
+    providerTitle: 'Who is behind CourseForge?',
+    providerBody: 'CourseForge is provided by Bába Gergely e.v., a sole trader based in Piliscsév, Hungary. The app and this website are available in English and Hungarian.',
+    supportTitle: 'Support and feedback',
+    supportBody: 'For app questions, bug reports or feedback, contact:',
+    detailsLink: 'Full service provider details',
+    exploreTitle: 'See the app in use',
+    exploreBody: 'The features page includes real app screenshots and details of the course editor. Compare Free and Lifetime Pro on the pricing page.',
   },
 
   features: {
@@ -298,16 +338,16 @@ export const en = {
 
   store: {
     title: 'Get CourseForge',
-    appleAlt: 'Coming soon to the App Store',
-    googleAlt: 'Coming soon to Google Play',
-    appleLine1: 'Coming soon to the',
+    appleAlt: 'Download CourseForge on the App Store',
+    googleAlt: 'Get CourseForge on Google Play',
+    appleLine1: 'Download on the',
     appleLine2: 'App Store',
-    googleLine1: 'Coming soon to',
+    googleLine1: 'Get it on',
     googleLine2: 'Google Play',
   },
 
   impressum: {
-    title: 'Impresszum',
+    title: 'Service provider details',
     description: 'Service provider details for the CourseForge website, as required by Hungarian law.',
     lead: 'Published under the Hungarian E-commerce Act (2001. évi CVIII. törvény, Ekertv. § 4), which requires these details for a commercial online service.',
     fields: {

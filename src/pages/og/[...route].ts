@@ -28,6 +28,7 @@ for (const locale of LOCALES) {
     ['home', t.common.appName, t.home.heroTitle],
     ['features', t.features.title, t.features.description],
     ['pricing', t.pricing.title, t.pricing.heading],
+    ['about', t.about.heading, t.about.description],
     ['privacy', t.footer.privacy, t.common.appName],
     ['terms', t.footer.terms, t.common.appName],
     ['impressum', t.impressum.title, t.common.appName],
